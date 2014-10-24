@@ -1,27 +1,44 @@
-[A date time D E F visibility H I J K L temperature N O P Q R S T dewpoint V W X windspeed Z windDir AB AC AD pressure AF AG AH AI AJ AK AL AM AN AO AP AQ AR] = textread('Seattle_WA.txt', '%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s', 'delimiter', ',');
+function data = ParseData(textfile)
 
-date = str2double(date); %Date
-time = str2double(time); %Time
+    NUM_FEATURES = 6;
 
-%TO DO: ONLY ADD THE ROWS THAT ARE THE FIRST TIME TO OCCUR THAT HOUR, I.E.
-%WHENEVER THE LAST TWO DIGITS OF TIME ROLL OVER.
+    [time visibility temperature dewpoint windspeed windDir pressure] = textread(textfile, '%*s%*s%s%*s%*s%*s%s%*s%*s%*s%*s%*s%s%*s%*s%*s%*s%*s%*s%*s%s%*s%*s%*s%s%*s%s%*s%*s%*s%s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s', 'delimiter', ',');
 
-%%time - floor(time/1000)*100 < 
+    time = floor(str2double(time)/100); %this value is in the form hhmm, so get rid of the minutes by dividing by 100
+    
+    visibility = str2double(visibility); %Visibility(miles)
+    temperature = str2double(temperature); %Temperature(celcius)
+    dewpoint = str2double(dewpoint); %DewPointCelcius
+    windspeed = str2double(windspeed); %WindSpeed(mph)
+    windDir = str2double(windDir); %WindDirection
+    pressure = str2double(pressure); %StationPressure
 
-visibility = str2double(visibility); %Visibility
-temperature = str2double(temperature); %Temperature
-dewpoint = str2double(dewpoint); %DewPointCelcius
-windspeed = str2double(windspeed); %WindSpeed
-windDir = str2double(windDir); %WindDirection
-pressure = str2double(pressure); %StationPressure
+    %create the data matrix with one row for every hour of the year
+    data = zeros(24*365, NUM_FEATURES);
 
-temp = [visibility temperature dewpoint windspeed windDir pressure];
-temp_nan = [isnan(visibility) isnan(temperature) isnan(dewpoint) isnan(windspeed) isnan(windDir) isnan(pressure)];
-for i=1:max(size(temp(:,1)))
-    for j=1:max(size(temp(1,:)))
-        if temp_nan(i,j) == 1
-            temp(i,j)=temp(i-1,j);
+    %only take the first row from each hour
+    last = -1;
+    new_row = 1;
+    for old_row=1:max(size(time))
+        if time(old_row) ~= last
+            data(new_row,:) = [visibility(old_row) temperature(old_row) dewpoint(old_row) windspeed(old_row) windDir(old_row) pressure(old_row)];
+            last = time(old_row);
+            new_row = new_row + 1;
+        end
+    end
+
+    %get rid of bad data, i.e. NaN, and 0s for windspeed/wind direction
+    for i=1:max(size(data(:,1)))
+        for j=1:max(size(data(1,:)))
+            %if the entry is not a number OR the entry is 0 and is from either windspeed or winddir, make it
+            %equal to the previous entry
+            if isnan(data(i,j)) == 1 || (data(i,j)==0 && (j==NUM_FEATURES-2 || j==NUM_FEATURES-1))
+                if i ~= 1
+                    data(i,j)=data(i-1,j);
+                else
+                    data(i,j)=0;
+                end
+            end
         end
     end
 end
-Matr = [visibility temperature dewpoint windspeed windDir pressure];
