@@ -1,10 +1,3 @@
-Hourly Obs
-Year: 2013
-Station Location: BISMARCK MUNICIPAL AIRPORT (24011)
-Lat: 46.782
-Lon: -100.757
-Elev: 1651 ft. above sea level
-WBAN,Date,Time,StationType,SkyCondition,SkyConditionFlag,Visibility,VisibilityFlag,WeatherType,WeatherTypeFlag,DryBulbFarenheit,DryBulbFarenheitFlag,DryBulbCelsius,DryBulbCelsiusFlag,WetBulbFarenheit,WetBulbFarenheitFlag,WetBulbCelsius,WetBulbCelsiusFlag,DewPointFarenheit,DewPointFarenheitFlag,DewPointCelsius,DewPointCelsiusFlag,RelativeHumidity,RelativeHumidityFlag,WindSpeed,WindSpeedFlag,WindDirection,WindDirectionFlag,ValueForWindCharacter,ValueForWindCharacterFlag,StationPressure,StationPressureFlag,PressureTendency,PressureTendencyFlag,PressureChange,PressureChangeFlag,SeaLevelPressure,SeaLevelPressureFlag,RecordType,RecordTypeFlag,HourlyPrecip,HourlyPrecipFlag,Altimeter,AltimeterFlag
 24011,20130101,0052,11,OVC026, ,10.00, , , ,2, ,-16.7, ,1, ,-17.0, ,-2, ,-18.9, , 83, , 3, ,120, , , ,28.37, , , , , ,30.26, ,AA, , , ,30.13, 
 24011,20130101,0152,11,OVC026, ,10.00, , , ,2, ,-16.7, ,1, ,-17.0, ,-2, ,-18.9, , 83, , 0, ,000, , , ,28.35, , , , , ,30.24, ,AA, , , ,30.11, 
 24011,20130101,0252,11,BKN018 OVC025, ,10.00, , , ,3, ,-16.1, ,2, ,-16.4, ,-0, ,-17.8, , 87, , 3, ,080, , , ,28.36, , , , , ,30.25, ,AA, , , ,30.12, 

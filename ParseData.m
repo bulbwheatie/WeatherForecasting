@@ -1,8 +1,9 @@
 function data = ParseData(textfile)
 
     NUM_FEATURES = 6;
+    PATH = 'Data/';
 
-    [time visibility temperature dewpoint windspeed windDir pressure] = textread(textfile, '%*s%*s%s%*s%*s%*s%s%*s%*s%*s%*s%*s%s%*s%*s%*s%*s%*s%*s%*s%s%*s%*s%*s%s%*s%s%*s%*s%*s%s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s', 'delimiter', ',');
+    [time visibility temperature dewpoint windspeed windDir pressure] = textread(strcat(PATH, textfile), '%*s%*s%s%*s%*s%*s%s%*s%*s%*s%*s%*s%s%*s%*s%*s%*s%*s%*s%*s%s%*s%*s%*s%s%*s%s%*s%*s%*s%s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s', 'delimiter', ',');
 
     time = floor(str2double(time)/100); %this value is in the form hhmm, so get rid of the minutes by dividing by 100
     

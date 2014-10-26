@@ -1,10 +1,3 @@
-Hourly Obs
-Year: 2013
-Station Location: CORTEZ MUNICIPAL AIRPORT (93069)
-Lat: 37.306
-Lon: -108.626
-Elev: 5910 ft. above sea level
-WBAN,Date,Time,StationType,SkyCondition,SkyConditionFlag,Visibility,VisibilityFlag,WeatherType,WeatherTypeFlag,DryBulbFarenheit,DryBulbFarenheitFlag,DryBulbCelsius,DryBulbCelsiusFlag,WetBulbFarenheit,WetBulbFarenheitFlag,WetBulbCelsius,WetBulbCelsiusFlag,DewPointFarenheit,DewPointFarenheitFlag,DewPointCelsius,DewPointCelsiusFlag,RelativeHumidity,RelativeHumidityFlag,WindSpeed,WindSpeedFlag,WindDirection,WindDirectionFlag,ValueForWindCharacter,ValueForWindCharacterFlag,StationPressure,StationPressureFlag,PressureTendency,PressureTendencyFlag,PressureChange,PressureChangeFlag,SeaLevelPressure,SeaLevelPressureFlag,RecordType,RecordTypeFlag,HourlyPrecip,HourlyPrecipFlag,Altimeter,AltimeterFlag
 93069,20130101,0053,12,CLR, ,10.00, , , ,-0, ,-17.8, ,-1, ,-18.2, ,-5, ,-20.6, , 79, , 8, ,070, , , ,24.18, , , , , ,30.23, ,AA, , , ,30.07, 
 93069,20130101,0153,12,CLR, , 8.00, , , ,-1, ,-18.3, ,-2, ,-18.8, ,-6, ,-21.1, , 79, , 7, ,080, , , ,24.19, , , , , ,30.26, ,AA, , , ,30.09, 
 93069,20130101,0253,12,CLR, ,10.00, , , ,-3, ,-19.4, ,-4, ,-19.9, ,-8, ,-22.2, , 79, , 9, ,060, , , ,24.21, , , , , ,30.28, ,AA, , , ,30.11, 
