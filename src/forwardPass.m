@@ -19,6 +19,6 @@ function Y = forwardPass(X, W)
     W = features(W);
 
     %Apply the non-linearity squashing function
-    Y = tanh(B * W);
+    Y = tanh(B.' * W);
 
 end

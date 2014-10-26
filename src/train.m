@@ -9,6 +9,7 @@ function [weights, errors] = train(train, validate, test)
     iter = 0;
     learningRate = 0.1;
     while (iter < 500) 
+        [X1, X2, Y] = forwardPassNetwork(X, Wone, Wtwo, Wfinal, numHidden);
         W = backpropagate(train, W, learningRate);
     end
     errors = networkError(validate, W);
