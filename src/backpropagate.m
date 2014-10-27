@@ -32,9 +32,11 @@ function [Uone, Utwo, Ufinal, error] = backpropagate(X, X1, X2, Y, Ytarget, Wone
         Ufinal = Wfinal + delta * a;
     end
     
+    % Must provide the initial input X, signals for hidden layer X1
+    % Weight matrix for the first hidden layer
     if (numHidden == 1)
         %Calculate for final layer
-        deltaPrev = X * tranpose(finalLayerError(Y, Ytarget));
+        deltaPrev = X1 * tranpose(finalLayerError(Y, Ytarget));
         Ufinal = Wfinal + delta * a;    
         
         %Calculate for hidden layer before
@@ -42,7 +44,20 @@ function [Uone, Utwo, Ufinal, error] = backpropagate(X, X1, X2, Y, Ytarget, Wone
         Uone = Wone + delta * a;
     end
     
+    % Must provide the initial input X, signals for hidden layer X1,
+    % signals for the second hidden layer X2
+    % Weight matrix for the first and second hidden layer Wone and Wtwo
     if (numHidden == 2)
+        %Calculate for final layer
+        deltaPrev = X2 * tranpose(finalLayerError(Y, Ytarget));
+        Ufinal = Wfinal + delta * a;    
         
+        %Calculate for second hidden layer 
+        delta = X1 * transpose(hiddenLayerErorr(deltaPrev, Wtwo, X2));
+        Utwo = Wone + delta * a;
+        
+                %Calculate for second hidden layer 
+        delta = X * transpose(hiddenLayerErorr(deltaPrev, Wone, X1));
+        Uone = Wone + delta * a;
     end
 end
