@@ -8,7 +8,7 @@
 % Outputs 
 % W = 
 % erros = scalar - MSE for the network on the test data
-function [Wone, Wtwo, Wfinal, testError] = train(data, learningRate, numHidden)
+function [Wone, Wtwo, Wfinal, validateError, testError] = train(data, learningRate, numHidden)
 
     % Initialzie weight matrices for each hidden layer and the final output
     Wone = initWeights(size(data.trainX,2), size(data.trainX,2), -1/4, 1/4);
