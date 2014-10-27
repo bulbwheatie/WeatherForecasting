@@ -1,7 +1,7 @@
-function data = ParseData(textfile)
+function data = parseData(textfile)
 
     NUM_FEATURES = 6;
-    PATH = 'Data/';
+    PATH = '../data/';
 
     [time visibility temperature dewpoint windspeed windDir pressure] = textread(strcat(PATH, textfile), '%*s%*s%s%*s%*s%*s%s%*s%*s%*s%*s%*s%s%*s%*s%*s%*s%*s%*s%*s%s%*s%*s%*s%s%*s%s%*s%*s%*s%s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s', 'delimiter', ',');
 
