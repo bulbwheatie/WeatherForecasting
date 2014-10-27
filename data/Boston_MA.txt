@@ -1,10 +1,3 @@
-Hourly Obs
-MYear: 2013
-Station Location: GEN E L LOGAN INTERNATIONAL AIRPORT (14739)
-Lat: 42.360
-Lon: -71.010
-Elev: 12 ft. above sea level
-WBAN,Date,Time,StationType,SkyCondition,SkyConditionFlag,Visibility,VisibilityFlag,WeatherType,WeatherTypeFlag,DryBulbFarenheit,DryBulbFarenheitFlag,DryBulbCelsius,DryBulbCelsiusFlag,WetBulbFarenheit,WetBulbFarenheitFlag,WetBulbCelsius,WetBulbCelsiusFlag,DewPointFarenheit,DewPointFarenheitFlag,DewPointCelsius,DewPointCelsiusFlag,RelativeHumidity,RelativeHumidityFlag,WindSpeed,WindSpeedFlag,WindDirection,WindDirectionFlag,ValueForWindCharacter,ValueForWindCharacterFlag,StationPressure,StationPressureFlag,PressureTendency,PressureTendencyFlag,PressureChange,PressureChangeFlag,SeaLevelPressure,SeaLevelPressureFlag,RecordType,RecordTypeFlag,HourlyPrecip,HourlyPrecipFlag,Altimeter,AltimeterFlag
 14739,20130101,0054,11,FEW045 OVC090, ,10.00, , , ,33, ,0.6, ,29, ,-1.4, ,23, ,-5.0, , 67, ,14, ,230, , , ,29.72, , , , , ,29.75, ,AA, , , ,29.75, 
 14739,20130101,0154,11,BKN040 OVC080, ,10.00, , , ,34, ,1.1, ,30, ,-1.0, ,23, ,-5.0, , 64, ,13, ,230, , , ,29.73, , , , , ,29.76, ,AA, , , ,29.76, 
 14739,20130101,0254,11,BKN047 OVC110, ,10.00, , , ,34, ,1.1, ,30, ,-1.0, ,23, ,-5.0, , 64, ,13, ,230, , , ,29.71, , , , , ,29.74, ,AA, , , ,29.74, 
