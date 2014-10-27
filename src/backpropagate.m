@@ -39,12 +39,12 @@ function [Uone, Utwo, Ufinal] = backpropagate(X, X1, X2, Y, Ytarget, Wone, Wtwo,
     % Weight matrix for the first hidden layer
     if (numHidden == 1)
         %Calculate for final layer
-        deltaPrev = X1 * transpose(finalLayerError(Y, Ytarget));
-        Ufinal = Wfinal + delta * a;    
+        deltaPrev = transpose(X) * finalLayerError(Y, Ytarget);
+        Ufinal = Wfinal + deltaPrev * a;    
         
         %Calculate for hidden layer before
-        delta = X * transpose(hiddenLayerErorr(deltaPrev, Wone, X1));
-        Uone = Wone + delta * a;
+        delta = transpose(X1) .* hiddenLayerError(deltaPrev, Wfinal, X1);
+        Uone = Wone + repmat(delta, [1,size(Wone,2)]) * a;
     end
     
     % Must provide the initial input X, signals for hidden layer X1,
@@ -52,15 +52,15 @@ function [Uone, Utwo, Ufinal] = backpropagate(X, X1, X2, Y, Ytarget, Wone, Wtwo,
     % Weight matrix for the first and second hidden layer Wone and Wtwo
     if (numHidden == 2)
         %Calculate for final layer
-        deltaPrev = X2 * transpose(finalLayerError(Y, Ytarget));
-        Ufinal = Wfinal + delta * a;    
+        deltaPrev = transpose(X2) * finalLayerError(Y, Ytarget);
+        Ufinal = Wfinal + deltaPrev * a;    
         
         %Calculate for second hidden layer 
-        delta = X1 * transpose(hiddenLayerErorr(deltaPrev, Wtwo, X2));
-        Utwo = Wone + delta * a;
+        deltaPrev = transpose(X1) .* hiddenLayerError(deltaPrev, Wfinal, X2);
+        Utwo = Wtwo + repmat(deltaPrev, [1,size(Wtwo,2)]) * a;
         
                 %Calculate for second hidden layer 
-        delta = X * transpose(hiddenLayerErorr(deltaPrev, Wone, X1));
-        Uone = Wone + delta * a;
+        delta = transpose(X) .* hiddenLayerError(deltaPrev, Wtwo, X1);
+        Uone = Wone + repmat(delta, [1,size(Wone,2)]) * a;
     end
 end

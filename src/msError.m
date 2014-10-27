@@ -1,18 +1,16 @@
 % Calculates the mean square error per sample
 
 % Inputs
-% Ytarget = m x d actual values of m samples with d features
-% Ytest = m x d predicted values
+% Ytarget = 1 x d actual values of m samples with d features
+% Ytest = 1 x d predicted values
 
 % Outputs
 % err = scalar - mean square error per sample
 %
 
 function err = msError(Ytarget, Ytest) 
-    
 
-    error = Ytarget - Ytest;
-    error = error .^ 2;
-    err = norm(error)/size(error, 1);
+    % err = (((Ytarget - Ytest)./Ytest) * transpose((Ytarget - Ytest)./Ytest))/size(Ytest, 2);
+    err = (((Ytarget - Ytest)) * transpose((Ytarget - Ytest)))/size(Ytest, 2);
     
 end

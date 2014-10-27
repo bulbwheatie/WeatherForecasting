@@ -19,5 +19,9 @@ function netError = networkError(X, Y, Wone, Wtwo, Wfinal, numHidden)
     [X1, X2, Ytest] = forwardPassNetwork(X, Wone, Wtwo, Wfinal, numHidden);
     
     % Calculate MSE for all data set
-    netError = msError(Y, Ytest); 
+    netError = 0;
+    for i = 1:size(Y,1)
+        netError = netError + msError(Y(i,:), Ytest(i,:)); 
+    end
+    netError = netError/size(Y,1);
 end
