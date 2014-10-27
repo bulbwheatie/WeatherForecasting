@@ -12,6 +12,9 @@
 % Outputs:
 % Y = 1 x p (final)
 function [X1, X2, Y] = forwardPassNetwork(X, Wone, Wtwo, Wfinal, numHidden)
+    X1 = [];
+    X2 = [];
+    Y = [];
 
     % Zero Hidden Layers
     if (numHidden == 0)

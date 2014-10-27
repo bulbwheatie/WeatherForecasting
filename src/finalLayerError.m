@@ -12,6 +12,7 @@
 % delta = d x p values to update weight matrix 
 
 function delta = finalLayerError(Ypred, Y)
-    delta = (Ypred - Y) .* (1 - Ypred .* Ypred); 
+    % delta = (Ypred - Y) .* (1 - Ypred .* Ypred); 
+    delta =(Y - Ypred);
     % delta = X * d.';
 end

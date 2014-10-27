@@ -22,13 +22,16 @@
 % error = total amount of error in the network (scalar)
 
 % Returns an updated weight matrix
-function [Uone, Utwo, Ufinal, error] = backpropagate(X, X1, X2, Y, Ytarget, Wone, Wtwo, Wfinal, a, numHidden)
+function [Uone, Utwo, Ufinal] = backpropagate(X, X1, X2, Y, Ytarget, Wone, Wtwo, Wfinal, a, numHidden)
     % Runs the samples through the network 
     % Then recursively calculat the delta values for each perceptron and
     % upate its weight matrix
+    Uone = [];
+    Utwo = [];
+    Ufinal = [];
     
     if (numHidden == 0)
-        delta = X * tranpose(finalLayerError(Y, Ytarget));
+        delta = transpose(X) * finalLayerError(Y, Ytarget);
         Ufinal = Wfinal + delta * a;
     end
     
@@ -36,7 +39,7 @@ function [Uone, Utwo, Ufinal, error] = backpropagate(X, X1, X2, Y, Ytarget, Wone
     % Weight matrix for the first hidden layer
     if (numHidden == 1)
         %Calculate for final layer
-        deltaPrev = X1 * tranpose(finalLayerError(Y, Ytarget));
+        deltaPrev = X1 * transpose(finalLayerError(Y, Ytarget));
         Ufinal = Wfinal + delta * a;    
         
         %Calculate for hidden layer before
@@ -49,7 +52,7 @@ function [Uone, Utwo, Ufinal, error] = backpropagate(X, X1, X2, Y, Ytarget, Wone
     % Weight matrix for the first and second hidden layer Wone and Wtwo
     if (numHidden == 2)
         %Calculate for final layer
-        deltaPrev = X2 * tranpose(finalLayerError(Y, Ytarget));
+        deltaPrev = X2 * transpose(finalLayerError(Y, Ytarget));
         Ufinal = Wfinal + delta * a;    
         
         %Calculate for second hidden layer 

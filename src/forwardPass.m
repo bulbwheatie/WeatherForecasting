@@ -4,7 +4,7 @@
 % through signal function (in this case hyperbolic tangebt)
 
 % Inputs
-% X = 1 x d matrices
+% X = m x d matrices with m samples and d features
 % W = d x p matrix where p is the number of perceptrons in the layer
 
 % Outputs 
@@ -13,12 +13,14 @@
 function Y = forwardPass(X, W)    
 
     %Add the bias feature to the input matrix
-    B = features(X);
+    % B = features(X);
+    B = X;
 
     %Add an additional value to weights (should this be random?)
-    W = features(W);
+    % W = features(W);
 
     %Apply the non-linearity squashing function
-    Y = tanh(B.' * W);
+    %Y = tanh(B * W);
+    Y = B * W;
 
 end

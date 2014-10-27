@@ -16,7 +16,7 @@
 % netError = scalar - average mean sqaure error per sample 
 
 function netError = networkError(X, Y, Wone, Wtwo, Wfinal, numHidden) 
-    Ytest = forwardPassNetwork(X, Wone, Wtwo, Wfinal, numHidden);
+    [X1, X2, Ytest] = forwardPassNetwork(X, Wone, Wtwo, Wfinal, numHidden);
     
     % Calculate MSE for all data set
     netError = msError(Y, Ytest); 
