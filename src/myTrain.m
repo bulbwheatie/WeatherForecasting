@@ -8,14 +8,21 @@
 % Outputs 
 % W = 
 % erros = scalar - MSE for the network on the test data
-function [Wone, Wtwo, Wfinal, validateError, testError] = train(data, learningRate, numHidden, iterations)
+function [Wone, Wtwo, Wfinal, validateError, testError] = myTrain(data, learningRate, numHidden, iterations, Wfinal, Wone, Wtwo)
+    %initialize weight matrices with random values if the matrices are not
+    %provided
+    if nargin < 5
+        Wfinal = initWeights(size(data.trainX,2) + 1, size(data.trainY,2), -1/8, 1/8);
+        if nargin < 6
+            Wone = initWeights(size(data.trainX,2) + 1, size(data.trainX,2), -1/8, 1/8);
+            if nargin < 7
+                Wtwo = initWeights(size(data.trainX,2) + 1, size(data.trainX,2), -1/8, 1/8);
+            end
+        end
+    end
+        
     % Initialize validation error
     validateError = zeros(1,iterations);
-
-    % Initialzie weight matrices for each hidden layer and the final output
-    Wone = initWeights(size(data.trainX,2) + 1, size(data.trainX,2), -1/8, 1/8);
-    Wtwo = initWeights(size(data.trainX,2) + 1, size(data.trainX,2), -1/8, 1/8);
-    Wfinal = initWeights(size(data.trainX,2) + 1, size(data.trainY,2), -1/8, 1/8);
     
     % Run the forwardPass to get the signals
     % Adjust weights until we reach convergence
