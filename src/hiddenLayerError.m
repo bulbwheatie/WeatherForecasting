@@ -11,16 +11,16 @@
 
 
 
-function delta = hiddenLayerError(deltaPrev, W, Xout)
+function delta = hiddenLayerError(deltaPrev, W, Xin)
     
-    Xout = features(Xout);
-    delta = zeros(size(Xout,1), 1);
+    Xin = features(Xin);
+    delta = zeros(size(Xin,1), 1);
     for i = 1:(size(W, 1))
         sum = 0;
         for j = 1:(size(deltaPrev, 2))
             sum = sum + deltaPrev(i ,j) * W(i, j);
         end
-        % delta(i, 1) = -sum * (1 - Xout(1,i)) * Xout(1,i);
-        delta(i, 1) = -sum;
+        delta(i, 1) = sum * (1 - Xin(1,i)^2);
+        %delta(i, 1) = -sum;
     end
 end

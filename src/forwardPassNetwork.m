@@ -18,15 +18,15 @@ function [X1, X2, Y] = forwardPassNetwork(X, Wone, Wtwo, Wfinal, numHidden)
 
     % Zero Hidden Layers
     if (numHidden == 0)
-        Y = forwardPass(X, Wfinal);    
+        Y = forwardPass(X, Wfinal, 'final');    
     %One Hidden Layer
     elseif (numHidden == 1)
-        X1 = forwardPass(X, Wone);
-        Y = forwardPass(X1, Wfinal);    
+        X1 = forwardPass(X, Wone,'hidden');
+        Y = forwardPass(X1, Wfinal, 'final');    
     %Two Hidden Layers
     elseif (numHidden == 2)
-        X1 = forwardPass(X, Wone);
-        X2 = forwardPass(X1, Wtwo);
-        Y = forwardPass(X2, Wfinal);
+        X1 = forwardPass(X, Wone, 'hidden');
+        X2 = forwardPass(X1, Wtwo, 'hidden');
+        Y = forwardPass(X2, Wfinal, 'final');
     end
 end

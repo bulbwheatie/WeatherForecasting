@@ -10,17 +10,22 @@
 % Outputs 
 % Y = 1 x p outputs from each perceptron in the layer
 
-function Y = forwardPass(X, W)    
+function Y = forwardPass(X, W, type)    
 
     %Add the bias feature to the input matrix
     B = features(X);
     % B = X;
 
+    if (strcmp(type,'final'))
+        Y = B * W;
+    else
+        Y = tanh(B * W);
+    end
     %Add an additional value to weights (should this be random?)
     % W = features(W);
 
     %Apply the non-linearity squashing function
     %Y = tanh(B * W);
-    Y = B * W;
+
 
 end
