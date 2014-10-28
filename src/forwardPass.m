@@ -13,8 +13,8 @@
 function Y = forwardPass(X, W)    
 
     %Add the bias feature to the input matrix
-    % B = features(X);
-    B = X;
+    B = features(X);
+    % B = X;
 
     %Add an additional value to weights (should this be random?)
     % W = features(W);

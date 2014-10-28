@@ -13,13 +13,14 @@
 
 function delta = hiddenLayerError(deltaPrev, W, Xout)
     
+    Xout = features(Xout);
     delta = zeros(size(Xout,1), 1);
     for i = 1:(size(W, 1))
         sum = 0;
         for j = 1:(size(deltaPrev, 2))
             sum = sum + deltaPrev(i ,j) * W(i, j);
         end
-        % delta(i, :) = sum * (1 - Xout(1,i) * Xout(1,i));
+        % delta(i, 1) = -sum * (1 - Xout(1,i)) * Xout(1,i);
         delta(i, 1) = -sum;
     end
 end
