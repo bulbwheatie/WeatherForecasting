@@ -7,7 +7,7 @@
 % data.testY = [8; 12; 17];
 function checker(numHidden, learningRate, iterations) 
     data = getData_small();
-    [Wone, Wtwo, Wfinal, validateY, testError] = train(data, learningRate, numHidden, iterations);
+    [Wone, Wtwo, Wfinal, validateY, testError] = myTrain(data, learningRate, numHidden, iterations);
     validateX = 1:1:iterations;
     ylabel('squared error per sample');
     title('Validation error per iterations');

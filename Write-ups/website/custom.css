@@ -27,7 +27,13 @@ h1 {
 p {
 	text-align: center;
 	margin: 0;
-	color: #ffffff;
+	color: #000000;
+}
+
+.two-cols {
+	width: 50%;
+	float: left;
+	margin-bottom: 10px;
 }
 
 #wrapper {

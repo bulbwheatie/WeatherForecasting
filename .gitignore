@@ -5,3 +5,6 @@
 *.m~
 src/weights.mat
 src/midpoint.fig
+
+#Windows temp files
+
