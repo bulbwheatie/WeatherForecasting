@@ -1,4 +1,4 @@
-function data = parseData(textfile)
+function [data, std_mean] = parseData(textfile)
 
     NUM_FEATURES = 6;
     PATH = '../data/';
@@ -14,17 +14,19 @@ function data = parseData(textfile)
     windDir = str2double(windDir); %WindDirection
     pressure = str2double(pressure); %StationPressure
 
-    %create the data matrix with one row for every hour of the year
-    data = zeros(24*365, NUM_FEATURES);
+    %create the data matrix with one row for every 4th hour of the year
+    data = zeros((24/4)*365, NUM_FEATURES);
 
     %only take the first row from each hour
     last = -1;
     new_row = 1;
     for old_row=1:max(size(time))
         if time(old_row) ~= last
-            data(new_row,:) = [visibility(old_row) temperature(old_row) dewpoint(old_row) windspeed(old_row) windDir(old_row) pressure(old_row)];
-            last = time(old_row);
-            new_row = new_row + 1;
+            if (mod(time(old_row), 4) == 0)
+                data(new_row,:) = [visibility(old_row) temperature(old_row) dewpoint(old_row) windspeed(old_row) windDir(old_row) pressure(old_row)];
+                last = time(old_row);
+                new_row = new_row + 1;
+            end
         end
     end
 
@@ -41,5 +43,14 @@ function data = parseData(textfile)
                 end
             end
         end
+    end
+    
+    %zero-mean the data, and divide by the std
+    std_mean = zeros(2,NUM_FEATURES);
+    std_mean(1,:) = std(data);
+    std_mean(2,:) = mean(data);
+    for i=1:NUM_FEATURES
+        data(:,i) = data(:,i) - std_mean(2,i);
+        data(:,i) = data(:,i) ./ std_mean(1,i);
     end
 end
