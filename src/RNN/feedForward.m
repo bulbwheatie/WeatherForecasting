@@ -13,12 +13,10 @@ function Y = feedForward(X)
     
     % Initial state has no previous data as inputs
     Xprev = zeros(1, size(Wprev, 1));
-    Xprev = feedForwardStack(X(1,:), Xprev, Winput, Wprev);
     
-    % For each sample in the sequence feed through the network
-    
-    for i = 2:size(X, 1)
-        Xprev = feedForwardStack(X, Xprev, Winput, Wprev);        
+    % For each sample in the sequence feed through the network    
+    for i = 1:size(X, 1)
+        Xprev = feedForwardStack(X(i,:), Xprev, Winput, Wprev);        
     end 
     
     Y = computeOutput(X, Woutput);
