@@ -1,23 +1,23 @@
-
-function [Winput, Wprev, Woutput, error] = train(X, Y)
-    addpath('..');
-    
+% TODO - erroar
+function [Winput, Wprev, Woutput] = train(X, Y)
+    num_neurons  = 10;
     X = [ones(size(X,1), 1) X]; % Add bias feature
 
-    Winput = init_weights(size(X, 1), size(X, 2),-1/2, 1/2); % Create a d + 1 x n matrix for the extra bias feature
-    Wprev = init_weights(size(X, 2), size(X, 2),-1/2, 1/2);
-    Woutput = init_weights(size(X, 2), num_output, -1/2, 1/2);
+    Winput = initWeights(size(X, 2), num_neurons,-1/10, 1/10); % Create a d + 1 x n matrix for the extra bias feature
+    Wprev = initWeights(num_neurons, num_neurons,-1/10, 1/10);
+    Woutput = initWeights(num_neurons, size(Y,2), -1/10, 1/10);
     
     iter = 0;
+    max_iters = 1000;
+    lambda = 0.0000000001;
     while (iter < max_iters)
-        i = mod(iter, size(X, 1) - 24);
+        i = mod(iter, size(X, 1) - 24) + 1;
         
         %Forward pass through the network with a sequence of training data
-        [Ypred, signals] = feedforward(X(i:i+24,:), num_outputs, Winput, Wprev, Woutput);
+        [Ypred, signals] = feedForward(X(i:i+23,:), Winput, Wprev, Woutput);
         
         % Backpropagate and update weight matrices
-        [Winput, Wprev, Woutput] = backpropagate(X, Y, signals, Ypred, Winput, Wprev, Woutput);
-        
+        [Winput, Wprev, Woutput] = backpropagate(X(i:i+23,:), Y(i:i+23,:), signals, Ypred, Winput, Wprev, Woutput, lambda);       
         
         iter = iter + 1;
     end 
