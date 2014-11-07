@@ -1,5 +1,7 @@
 % TODO - erroar
-function [Winput, Wprev, Woutput] = train(X, Y)
+function [Winput, Wprev, Woutput] = train(X)
+    Y = X(2:size(X), :);
+    X = X(1:size(X)-1, :);
     num_neurons  = 10;
     X = [ones(size(X,1), 1) X]; % Add bias feature
 
