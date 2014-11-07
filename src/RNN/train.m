@@ -11,13 +11,13 @@ function [Winput, Wprev, Woutput] = train(X, Y)
     max_iters = 1000;
     lambda = 0.0000000001;
     while (iter < max_iters)
-        i = mod(iter, size(X, 1) - 24) + 1;
+        i = mod(iter, size(X, 1) - 6) + 1;
         
         %Forward pass through the network with a sequence of training data
-        [Ypred, signals] = feedForward(X(i:i+23,:), Winput, Wprev, Woutput);
+        [Ypred, signals] = feedForward(X(i:i+5,:), Winput, Wprev, Woutput);
         
         % Backpropagate and update weight matrices
-        [Winput, Wprev, Woutput] = backpropagate(X(i:i+23,:), Y(i:i+23,:), signals, Ypred, Winput, Wprev, Woutput, lambda);       
+        [Winput, Wprev, Woutput] = backpropagate(X(i:i+5,:), Y(i:i+5,:), signals, Ypred, Winput, Wprev, Woutput, lambda);       
         
         iter = iter + 1;
     end 
