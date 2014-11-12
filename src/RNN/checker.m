@@ -1,6 +1,6 @@
 
 function checker(data, std_mean) 
-    [Winput, Wprev, Woutput, error] = train(data);
+    [Winput, Wprev, Woutput, error] = train(data, 'all');
     i = 1;
     X = data(i:i+11,:);
     values_pred = zeros(6,6);
@@ -9,6 +9,7 @@ function checker(data, std_mean)
     for j=1:6
         [temp_y, signals] = feedForward([ones(size(X,1), 1) X], Winput, Wprev, Woutput);
         values_pred(j,:) = (temp_y(size(temp_y,1),:) .* std_mean(1,:)) + std_mean(2,:);
+        values_actual(j,:) = (values_actual(j,:) .* std_mean(1,:)) + std_mean(2,:); %Restore the actual values too
         X = [X(2:size(X,1),:) ; values_pred(j,:)];
     end
     
@@ -31,7 +32,7 @@ function checker(data, std_mean)
     
     %pressure
     plot(x_axis, transpose(values_pred(:,6)), x_axis, transpose(values_actual(:,6)));
-    legend('y = Predicted windspeed','y = Actual windspeed','Location','southeast');
+    legend('y = Predicted pressure','y = Actual pressure','Location','southeast');
     saveas(gcf, 'pressure.fig');
     
     %error

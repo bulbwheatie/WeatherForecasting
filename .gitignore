@@ -6,5 +6,8 @@
 src/weights.mat
 src/midpoint.fig
 
+#Generated graphs
+src/RNN/*.fig
+
 #Windows temp files
 *~*

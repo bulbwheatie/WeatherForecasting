@@ -7,7 +7,7 @@
 % signals. [n x 1] is the signal for the first stack's hidden layer
 % Y = [m x d] where the mth sample is the final output
 
-function [Uinput, Uprev, Uoutput] = backpropagate(X, Y, signals, Ypred, Winput, Wprev, Woutput, lambda)
+function [DiN] = backpropagate(X, Y, signals, Ypred, Wprev, Woutput)
     n = size(Wprev, 1); %number of neurons
     l = size(Y, 2); %number of features in the output
     m = size(X, 1); %number of samples
@@ -41,37 +41,5 @@ function [Uinput, Uprev, Uoutput] = backpropagate(X, Y, signals, Ypred, Winput, 
         end
     end
     
-    % Calculate update the weights based on these deltas
-    Uinput = zeros(size(Winput));
-    for i=1:size(Winput, 1)
-        for j=1:size(Winput,2)
-            tmpSum = 0;
-            for t=1:s
-               tmpSum = tmpSum + X(t,i) * DiN(t,j);
-            end
-            Uinput(i,j) = Winput(i,j) + lambda * tmpSum;
-        end
-    end
-    
-    Uprev = zeros(n,n);
-    for i=1:size(Winput, 2)
-        for j=1:size(Winput,2)
-            tmpSum = 0;
-            for t=2:s
-               tmpSum = tmpSum + signals(t-1, j) * DiN(t,i);
-            end
-            Uprev(i,j) = Wprev(i,j) + lambda * tmpSum;
-        end
-    end
-    
-    Uoutput = zeros(size(Woutput));
-    for i=1:size(Woutput, 1)
-        for j=1:size(Woutput,2)
-            tmpSum = 0;
-            for t=1:s
-               tmpSum = tmpSum + signals(t, i) * DiN(t,j);
-            end
-            Uoutput(i,j) = Woutput(i,j) + lambda * tmpSum;
-        end
-    end
+   
 end
