@@ -1,7 +1,7 @@
 % TODO - erroar
 % Trains for a specified output feature
-function [Winput, Winterior, Wprev1, Wprev2, Woutput, error] = train_new(X, outputs, batch_size, num_stacks)
-    if (strcmp(outputs, 'temp') == 1)
+function [Winput, Winterior, Wprev1, Wprev2, Woutput, error] = train_new(X, Winput, Winterior, Wprev1, Wprev2, Woutput, mode, batch_size, num_stacks)
+    if (strcmp(mode, 'temp') == 1)
         % Only train against the 2nd column of the outputs
         Y = X(2:size(X), 2);
     else
@@ -9,18 +9,10 @@ function [Winput, Winterior, Wprev1, Wprev2, Woutput, error] = train_new(X, outp
     end
 
     X = X(1:size(X)-1, :);
-    num_neurons  = 10;
-    X = [ones(size(X,1), 1) X]; % Add bias feature
-
-    Winput = initWeights(size(X, 2), num_neurons,-1/10, 1/10); % Create a d + 1 x n matrix for the extra bias feature
-    Winterior = initWeights(num_neurons, num_neurons,-1/10, 1/10);
-    Wprev1 = initWeights(num_neurons, num_neurons,-1/10, 1/10);
-    Wprev2 = initWeights(num_neurons, num_neurons,-1/10, 1/10);
-    Woutput = initWeights(num_neurons, size(Y,2), -1/2, 1/2);
     
     iter = 1;
-    max_iters = batch_size*200;
-    lambda = 0.00001;
+    max_iters = batch_size*100;
+    lambda = 0.0000001;
     error = zeros(floor(max_iters/batch_size), 1);
     while (iter <= max_iters)
         Uinput = zeros(size(Winput));
