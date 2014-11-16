@@ -13,7 +13,7 @@ function checker(data, std_mean)
         X = [X(2:size(X,1),:) ; values_pred(j,:)];
     end
     
-    x_axis = 1:size(values_pred, 1);
+    x_axis = (1:size(values_pred, 1))*4;
     
     %temperature
     plot(x_axis, transpose(values_pred(:,2)), x_axis, transpose(values_actual(:,2)));

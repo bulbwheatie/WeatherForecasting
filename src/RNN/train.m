@@ -17,9 +17,9 @@ function [Winput, Wprev, Woutput, error] = train(X, outputs)
     Woutput = initWeights(num_neurons, size(Y,2), -1/2, 1/2);
     
     iter = 1;
-    max_iters = 3000;
-    batch_size = 30;
-    lambda = 0.0000000001;
+    batch_size = 1000;
+    max_iters = batch_size*50;
+    lambda = 0.0000000000000000000001;
     error = zeros(floor(max_iters/batch_size), 1);
     while (iter <= max_iters)
         Uinput = zeros(size(Winput));
@@ -31,6 +31,8 @@ function [Winput, Wprev, Woutput, error] = train(X, outputs)
 
             %Forward pass through the network with a sequence of training data
             [Ypred, signals] = feedForward(X(i:i+11,:), Winput, Wprev, Woutput);
+            %disp('Ypred');
+            %disp(Ypred);
             tmp_error = tmp_error + sum((Ypred(size(Ypred,1),:) - Y(i+11,:)).^2);
             
             % Backpropagate and update weight matrices
@@ -43,6 +45,10 @@ function [Winput, Wprev, Woutput, error] = train(X, outputs)
         Wprev = Wprev + lambda * Uprev/batch_size;
         Woutput = Woutput + lambda * Uoutput/batch_size;
         error(floor(iter/batch_size), 1) = tmp_error/batch_size;
-        error(floor(iter/batch_size), 1)
+        
+        %disp('error');
+        %disp(error(floor(iter/batch_size), 1));
+        %disp('iter');
+        disp(iter-1);
     end 
 end
