@@ -1,6 +1,6 @@
 
 function checker(data, std_mean) 
-    [Winput, Wprev, Woutput, error] = train(data, 'all');
+    [Winput, Wprev, Woutput, error] = train(data, 'all', 1);
     i = 1;
     X = data(i:i+11,:);
     values_pred = zeros(6,6);
