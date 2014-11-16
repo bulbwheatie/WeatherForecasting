@@ -11,8 +11,8 @@ function [Winput, Winterior, Wprev1, Wprev2, Woutput, error] = train_new(X, Winp
     X = X(1:size(X)-1, :);
     
     iter = 1;
-    max_iters = batch_size*100;
-    lambda = 0.0000001;
+    max_iters = batch_size*200;
+    lambda = 0.0000000000001;
     error = zeros(floor(max_iters/batch_size), 1);
     while (iter <= max_iters)
         Uinput = zeros(size(Winput));

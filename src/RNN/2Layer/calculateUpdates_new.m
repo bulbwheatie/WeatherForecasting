@@ -19,7 +19,7 @@ function [Uinput, Uinterior, Uprev1, Uprev2, Uoutput] = calculateUpdates_new(Uin
         for j=1:n
             tmpSum = 0;
             for t=1:s
-               tmpSum = tmpSum + signals1(t, j) * DiN(t,i);
+               tmpSum = tmpSum + signals1(t, i) * DiN(t,j);
             end
             Uinterior(i,j) = Uinterior(i,j) + tmpSum;
         end
@@ -29,7 +29,7 @@ function [Uinput, Uinterior, Uprev1, Uprev2, Uoutput] = calculateUpdates_new(Uin
         for j=1:n
             tmpSum = 0;
             for t=2:s
-               tmpSum = tmpSum + signals1(t-1, j) * DpN(t,i);
+               tmpSum = tmpSum + signals1(t-1, i) * DpN(t,j);
             end
             Uprev1(i,j) = Uprev1(i,j) + tmpSum;
         end
@@ -39,7 +39,7 @@ function [Uinput, Uinterior, Uprev1, Uprev2, Uoutput] = calculateUpdates_new(Uin
         for j=1:n
             tmpSum = 0;
             for t=2:s
-               tmpSum = tmpSum + signals2(t-1, j) * DiN(t,i);
+               tmpSum = tmpSum + signals2(t-1, i) * DiN(t,j);
             end
             Uprev2(i,j) = Uprev2(i,j) + tmpSum;
         end
