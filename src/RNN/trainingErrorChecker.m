@@ -1,7 +1,9 @@
-% Models the temperature output based on all features
-
-function temp_checker(data, std_mean)
-    [Winput, Wprev, Woutput, error, train_error] = train(data, 'temp', 30);
+function train_error = trainingErrorChecker(data, std_mean)
+    % Create a small data set and run the entire set through the training
+    % process for each update and check that the error is indeed reducing.
+    batch_size = 100;
+    small_set = data(1:batch_size,:);
+    [Winput, Wprev, Woutput, error, train_error] = train(small_set, 'temp', batch_size);
     
     i = 1;
     X = data(i:i+11,:);
@@ -23,13 +25,9 @@ function temp_checker(data, std_mean)
     plot(x_axis, transpose(values_pred(:,1)), x_axis, transpose(values_actual(:,2)));
     legend('y = Predicted temperature','y = Actual temperature','Location','southoutside');
     saveas(gcf, 'temperature.fig');
-
-    %plot(1:size(error, 1), transpose(error), 1:size(train_error, 1), transpose(train_error));
+    
+    %error
     plot(1:size(train_error, 1), transpose(train_error));
-    legend('y = Squared error', 'Location','southoutside');
-    saveas(gcf, 'temp_error.fig');
-
-    save('post_temp_train.mat', 'Winput', 'Wprev', 'Woutput', 'data', 'std_mean', 'error');
-
+    legend('y = Squared error','Location','southeast');
+    saveas(gcf, 'train_error.fig');
 end
-
