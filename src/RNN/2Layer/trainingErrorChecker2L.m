@@ -1,10 +1,10 @@
 function error = trainingErrorChecker2L(data, std_mean)
     % Create a small data set and run the entire set through the training
     % process for each update and check that the error is indeed reducing.
-    batch_size = 2;
-    num_stacks = 4;
-    small_set = data(1:batch_size+num_stacks,2);
-    [Winput, Winterior, Wprev1, Wprev2, Woutput, error] = train_new(small_set, 'all', batch_size, num_stacks);
+    batch_size = 12;
+    num_stacks = 12;
+    small_set = data(1:batch_size+num_stacks,:);
+    [Winput, Winterior, Wprev1, Wprev2, Woutput, error] = train_new(small_set, 'temp', batch_size, num_stacks);
     
     i = 1;
     X = data(i:i+11,:);
