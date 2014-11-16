@@ -7,7 +7,7 @@
 % signals. [n x 1] is the signal for the first stack's hidden layer
 % Y = [m x d] where the mth sample is the final output
 
-function [DiN] = backpropagate(X, Y, signals1, signals2, Ypred, Winterior, Wprev1, Wprev2, Woutput)
+function [DiN, DpN] = backpropagate_new(X, Y, signals1, signals2, Ypred, Winterior, Wprev1, Wprev2, Woutput)
     n = size(Wprev1, 1); %number of neurons
     l = size(Y, 2); %number of features in the output
     m = size(X, 1); %number of samples
@@ -33,13 +33,26 @@ function [DiN] = backpropagate(X, Y, signals1, signals2, Ypred, Winterior, Wprev
     
     % Calculate delta terms for each hidden neuron in each stack prior to
     % the final output one
-    % DiN = [s x n] deltas for each hidden layer
+    % DiN = [s x n] deltas for each second hidden layer
     % DiN(1,2) delta for the first neuron in the 2nd stack layer
     for t = s-1:-1:1
         for i = 1:n
-            DiN(t, i) = (sum(DiN(t+1,:) .* Wprev(i,:)) + sum(DjN(t,:) .* Woutput(i,:))) * (1 + tanh(signals2(t,:))*tanh(signals2(t,:)).');
+            DiN(t, i) = (sum(DiN(t+1,:) .* Wprev2(i,:)) + sum(DjN(t,:) .* Woutput(i,:))) * (1 + tanh(signals2(t,:))*tanh(signals2(t,:)).');
         end
     end
     
-   
+    DpN = zeros(s, n);
+    % Calculate the delta terms for the previous layer
+    % DpN = [s x n] deltas for first hidden layer
+    % Deltas contributed from same layer in stack above and same stack,
+    % next layer
+    for i = 1:n
+        DpN(s, i) = sum(Woutput(i, :) .* DiN(s,:)) * (1 + tanh(signals1(s,:))*tanh(signals1(s,:)).');
+    end
+    
+    for t = s-1:-1:1
+        for i = 1:n
+            DpN(t, i) = (sum(DpN(t+1,:) .* Wprev1(i,:)) + sum(DpN(t,:) .* Winterior(i,:))) * (1 + tanh(signals1(t,:))*tanh(signals1(t,:)).');
+        end
+    end
 end

@@ -13,8 +13,8 @@
 % signal1 = [1 x n] signals of layer1 prior to squashing
 % signal2 = [1 x n] signals of layer2 prior to squashing
 
-function [Y1, Y2, signal1, signal2] = feedForwardStack(X, Xprev1, Xprev2, Winput, Winterior, Wprev1, Wprev2) 
-    n = size(Wprev,1);
+function [Y1, Y2, signal1, signal2] = feedForwardStack_new(X, Xprev1, Xprev2, Winput, Winterior, Wprev1, Wprev2) 
+    n = size(Wprev1,1);
     signal1 = zeros(1,n);
     signal2 = zeros(1,n);
     for i=1:n
@@ -22,7 +22,7 @@ function [Y1, Y2, signal1, signal2] = feedForwardStack(X, Xprev1, Xprev2, Winput
     end
     Y1 = tanh(signal1);
     for i=1:n
-        signal1(1,i) = sum(Y1 * Winterior) + sum(Xprev2 * Wprev2);
+        signal2(1,i) = sum(Y1 * Winterior) + sum(Xprev2 * Wprev2);
     end
     Y2 = tanh(signal2);
 end

@@ -1,4 +1,4 @@
-function [Uinput, Uinterior, Uprev1, Uprev2, Uoutput] = calculateUpdates(Uinput, Uinterior, Uprev1, Uprev2, Uoutput, X, signals1, signals2, DiN)
+function [Uinput, Uinterior, Uprev1, Uprev2, Uoutput] = calculateUpdates_new(Uinput, Uinterior, Uprev1, Uprev2, Uoutput, X, signals1, signals2, DiN, DpN)
     d = size(Uinput, 1);
     s = size(signals1, 1); %number of stacks
     n = size(Uprev1, 1); %number of neurons
@@ -9,35 +9,32 @@ function [Uinput, Uinterior, Uprev1, Uprev2, Uoutput] = calculateUpdates(Uinput,
         for j=1:n
             tmpSum = 0;
             for t=1:s
-               tmpSum = tmpSum + X(t,i) * DiN(t,j);
+               tmpSum = tmpSum + X(t,i) * DpN(t,j);
             end
             Uinput(i,j) = Uinput(i,j) + tmpSum;
         end
     end
     
-    Uinterior = zeros(n, n);
     for i=1:n
         for j=1:n
             tmpSum = 0;
             for t=1:s
                tmpSum = tmpSum + signals1(t, j) * DiN(t,i);
             end
-            Uprev1(i,j) = Uprev1(i,j) + tmpSum;
+            Uinterior(i,j) = Uinterior(i,j) + tmpSum;
         end
     end
     
-    Uprev1 = zeros(n, n);
     for i=1:n
         for j=1:n
             tmpSum = 0;
             for t=2:s
-               tmpSum = tmpSum + signals1(t-1, j) * DiN(t,i);
+               tmpSum = tmpSum + signals1(t-1, j) * DpN(t,i);
             end
             Uprev1(i,j) = Uprev1(i,j) + tmpSum;
         end
     end
     
-    Uprev2 = zeros(n, n);
     for i=1:n
         for j=1:n
             tmpSum = 0;
@@ -48,7 +45,6 @@ function [Uinput, Uinterior, Uprev1, Uprev2, Uoutput] = calculateUpdates(Uinput,
         end
     end
     
-    Uoutput = zeros(size(Uoutput));
     for i=1:n
         for j=1:l
             tmpSum = 0;

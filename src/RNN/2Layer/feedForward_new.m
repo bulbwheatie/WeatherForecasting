@@ -10,7 +10,7 @@
 % signals1 = [s x n] input values to the squashing function for each hidden
 % signals2 = [s x n] input values to the squashing function for each hidden
 % layer in the forward pass
-function [Y, signals1, signals2] = feedForward(X, Winput, Winterior, Wprev1, Wprev2, Woutput) 
+function [Y, signals1, signals2] = feedForward_new(X, Winput, Winterior, Wprev1, Wprev2, Woutput) 
 
     s = size(X, 1);
     n = size(Wprev1, 1);
@@ -26,8 +26,8 @@ function [Y, signals1, signals2] = feedForward(X, Winput, Winterior, Wprev1, Wpr
     Y = zeros(s, L);
     % For each sample in the sequence feed through the network    
     for i = 1:s
-        [Xprev1, Xprev2, signals1(i,:), signals2(i,:)] = feedForwardStack(X(i,:), Xprev1, Xprev2, Winput, Winterior, Wprev1, Wprev2);
-        Y(i,:) = computeOutput(Xprev2, Woutput);
+        [Xprev1, Xprev2, signals1(i,:), signals2(i,:)] = feedForwardStack_new(X(i,:), Xprev1, Xprev2, Winput, Winterior, Wprev1, Wprev2);
+        Y(i,:) = Xprev2 * Woutput;
     end 
 end
 
