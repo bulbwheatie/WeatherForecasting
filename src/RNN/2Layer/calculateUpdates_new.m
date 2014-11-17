@@ -1,7 +1,7 @@
 function [Uinput, Uinterior, Uprev1, Uprev2, Uoutput] = calculateUpdates_new(Uinput, Uinterior, Uprev1, Uprev2, Uoutput, X, signals1, signals2, DiN, DpN)
     d = size(Uinput, 1);
     s = size(signals1, 1); %number of stacks
-    n = size(Uprev1, 1); %number of neurons
+    n = size(Uprev1, 1) -1; %number of neurons
     l = size(Uoutput, 2); %number of features in the output
     
     % Calculate update the weights based on these deltas

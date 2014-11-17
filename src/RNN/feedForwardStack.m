@@ -12,8 +12,7 @@ function [Y, signal] = feedForwardStack(X, Xprev, Winput, Wprev)
     n = size(Wprev,1);
     signal = zeros(1,n);
     for i=1:n
-        signal(1,i) = sum(X * Winput(:, i)) + sum(Xprev * Wprev);
+        signal(1,i) = X * Winput(:, i) + sum(Xprev * Wprev);
     end
-    Y = tanh(signal);   
-   
+    Y = tanh(signal);
 end

@@ -1,7 +1,7 @@
 % Models the temperature output based on all features
 
 function temp_checker(data, std_mean)
-    batch_size = 20;
+    batch_size = 1000;
     num_stacks = 12;
     
     %Random init of weights

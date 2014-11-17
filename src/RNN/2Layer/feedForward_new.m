@@ -27,6 +27,7 @@ function [Y, signals1, signals2] = feedForward_new(X, Winput, Winterior, Wprev1,
     % For each sample in the sequence feed through the network    
     for i = 1:s
         [Xprev1, Xprev2, signals1(i,:), signals2(i,:)] = feedForwardStack_new(X(i,:), Xprev1, Xprev2, Winput, Winterior, Wprev1, Wprev2);
+        %Xprev2 = [Xprev2, ones(1)]; % Add the bias term
         Y(i,:) = Xprev2 * Woutput;
     end 
 end

@@ -15,14 +15,14 @@
 
 function [Y1, Y2, signal1, signal2] = feedForwardStack_new(X, Xprev1, Xprev2, Winput, Winterior, Wprev1, Wprev2) 
     n = size(Wprev1,1);
-    signal1 = zeros(1,n);
-    signal2 = zeros(1,n);
-    for i=1:n
-        signal1(1,i) = sum(X * Winput(:, i)) + sum(Xprev1 * Wprev1);
+    signal1 = ones(1,n); %Don't create signals for the bias neuron
+    signal2 = ones(1,n);
+    for i=1:n-1
+        signal1(1,i) = sum(X * Winput(:, i)) + sum(Xprev1 * Wprev1(:,i));
     end
     Y1 = tanh(signal1);
-    for i=1:n
-        signal2(1,i) = sum(Y1 * Winterior) + sum(Xprev2 * Wprev2);
+    for i=1:n-1
+        signal2(1,i) = sum(Y1 * Winterior(:,i)) + sum(Xprev2 * Wprev2(:,i));
     end
     Y2 = tanh(signal2);
 end
