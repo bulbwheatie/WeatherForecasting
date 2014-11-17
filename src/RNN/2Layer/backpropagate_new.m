@@ -7,7 +7,7 @@
 % signals. [n x 1] is the signal for the first stack's hidden layer
 % Y = [m x d] where the mth sample is the final output
 
-function [DiN, DpN] = backpropagate_new(X, Y, signals1, signals2, Ypred, Winterior, Wprev1, Wprev2, Woutput)
+function [DjN, DiN, DpN] = backpropagate_new(X, Y, signals1, signals2, Ypred, Winterior, Wprev1, Wprev2, Woutput)
     n = size(Wprev1, 1); %number of neurons
     l = size(Y, 2); %number of features in the output
     m = size(X, 1); %number of samples

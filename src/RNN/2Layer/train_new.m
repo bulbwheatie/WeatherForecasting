@@ -3,17 +3,18 @@
 function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, error] = train_new(X, Winput, Winterior, Wprev1, Wprev2, Woutput, mode, batch_size, num_stacks)
     if (strcmp(mode, 'temp') == 1)
         % Only train against the 2nd column of the outputs
-        Y = X(2:size(X), 2);
+        Y = X(2:size(X), 1);
     else
         Y = X(2:size(X), :);
     end
 
     X = X(1:size(X)-1, :);
     iter = 1;
-    max_iters = batch_size*10000;
+    max_iters = batch_size*500;
     lambda = 0.0001;
     error = zeros(floor(max_iters/batch_size), 1);
     tmp_error = 0;
+    i=0;
     while (iter <= max_iters && tmp_error/batch_size < 20)
         Uinput = zeros(size(Winput));
         Uinterior = zeros(size(Winterior));
@@ -22,15 +23,20 @@ function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, error]
         Uoutput = zeros(size(Woutput));
         tmp_error = 0;
         for b=1:batch_size-1
-            i = mod(iter, size(X, 1) - num_stacks) + 1;
+            if (i == size(X,1) - num_stacks)
+               i = 1;
+            else 
+                i = i + 1;
+            end
+            %i = mod(iter, size(X, 1) - num_stacks) + 1;
 
             %Forward pass through the network with a sequence of training data
-            [Ypred, signals1, signals2] = feedForward_new(X(i:i+num_stacks-1,1:2), Winput, Winterior, Wprev1, Wprev2, Woutput);
+            [Ypred, signals1, signals1prev, signals2, signals2prev] = feedForward_new(X(i:i+num_stacks-1,:), Winput, Winterior, Wprev1, Wprev2, Woutput);
             tmp_error = tmp_error + sum((Ypred(size(Ypred,1),:) - Y(i+num_stacks-1,:)).^2);
             
             % Backpropagate and update weight matrices
-            [DiN, DpN] = backpropagate_new(X(i:i+num_stacks-1,:), Y(i:i+num_stacks-1,:), signals1, signals2, Ypred, Winterior, Wprev1, Wprev2, Woutput);       
-            [Uinput, Uinterior, Uprev1, Uprev2, Uoutput] = calculateUpdates_new(Uinput, Uinterior, Uprev1, Uprev2, Uoutput, X, signals1, signals2, DiN, DpN);
+            [DjN, DiN, DpN] = backpropagate_new(X(i:i+num_stacks-1,:), Y(i:i+num_stacks-1,:), signals1 + signals1prev, signals2 + signals2prev, Ypred, Winterior, Wprev1, Wprev2, Woutput);       
+            [Uinput, Uinterior, Uprev1, Uprev2, Uoutput] = calculateUpdates_new(Uinput, Uinterior, Uprev1, Uprev2, Uoutput, X, signals1, signals1prev, signals2, signals2prev, DjN, DiN, DpN);
             iter = iter + 1;
         end
         % Update the weight matrices based on average deltas
@@ -48,8 +54,9 @@ function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, error]
             Wprev1_min = Wprev1;
             Wprev2_min = Wprev2;
             Woutput_min = Woutput;
+            disp(error(floor(iter/(batch_size-1)), 1));
+
         end
         
-        disp(error(floor(iter/(batch_size-1)), 1));
     end 
 end
