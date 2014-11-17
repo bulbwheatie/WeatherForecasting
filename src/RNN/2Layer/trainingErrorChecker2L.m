@@ -2,8 +2,8 @@ function error = trainingErrorChecker2L(data, std_mean)
     % Create a small data set and run the entire set through the training
     % process for each update and check that the error is indeed reducing.
     batch_size = 12;
-    num_stacks = 12;
-    small_set = data(1:batch_size+num_stacks,:);
+    num_stacks = 3;
+    small_set = data;
     
     %Random init of weights
     num_neurons  = 25;

@@ -18,7 +18,7 @@ function [Y, signals] = feedForward(X, Winput, Wprev, Woutput)
     % TODO - save the signals into each layer
     signals = zeros(s, n); 
     
-    Y = zeros(s,size(Woutput, 2));
+    Y = zeros(s, size(Woutput, 2));
     % For each sample in the sequence feed through the network    
     for i = 1:size(X, 1)
         [Xprev, signals(i,:)] = feedForwardStack(X(i,:), Xprev, Winput, Wprev);

@@ -17,8 +17,10 @@ function [DiN] = backpropagate(X, Y, signals, Ypred, Wprev, Woutput)
     % For each stack layer, calculate the output error
     % DjN = [s x L] deltas for the final output vector (linear node)
     % i.e. DjN(1,1) corresponds to the delta term for the 1st output
-    % feature of the 1st stack 
-    DjN = Y - Ypred;
+    % feature of the 1st stack
+    %DjN = zeros(size(Y));
+    %DjN(s) = Y(s) - Ypred(s);
+    DjN = Ypred - Y;
     
     % DiT = [1 x n] deltas for the hidden nodes in the final layer
     % (squashing present)
