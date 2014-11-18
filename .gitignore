@@ -9,6 +9,8 @@ src/midpoint.fig
 #Generated graphs
 src/RNN/*.fig
 src/RNN/2Layer/*.fig
+src/TwoLayer/graphs
+src/TwoLayer/*.mat
 
 #Windows temp files
 *~*
