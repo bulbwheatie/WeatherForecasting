@@ -1,7 +1,7 @@
 function [data, std_mean] = parseData(textfile)
 
     NUM_FEATURES = 6;
-    PATH = '../../../data/';
+    PATH = '../../data/';
 
     [time visibility temperature dewpoint windspeed windDir pressure] = textread(strcat(PATH, textfile), '%*s%*s%s%*s%*s%*s%s%*s%*s%*s%*s%*s%s%*s%*s%*s%*s%*s%*s%*s%s%*s%*s%*s%s%*s%s%*s%*s%*s%s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s', 'delimiter', ',');
 

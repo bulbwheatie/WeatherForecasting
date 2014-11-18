@@ -1,8 +1,8 @@
 function [data, std_mean] = getData(mode)
     if strcmp(mode, 'all')
-        files = dir('../../../data/*.txt');
+        files = dir('../../data/*.txt');
     else
-        files = dir('../../../data/*WA.txt');
+        files = dir('../../data/*WA.txt');
     end
     rows_per_file = (24/4)*365;
     NUM_FEATURES = 6;
