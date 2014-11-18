@@ -13,16 +13,20 @@
 % signal1 = [1 x n] signals of layer1 prior to squashing
 % signal2 = [1 x n] signals of layer2 prior to squashing
 
-function [Y1, Y2, signal1, signal2] = feedForwardStack_new(X, Xprev1, Xprev2, Winput, Winterior, Wprev1, Wprev2) 
+function [Y1, Y2, signal1, signal1prev, signal2, signal2prev] = feedForwardStack_new(X, Xprev1, Xprev2, Winput, Winterior, Wprev1, Wprev2) 
     n = size(Wprev1,1);
-    signal1 = zeros(1,n);
-    signal2 = zeros(1,n);
-    for i=1:n
-        signal1(1,i) = sum(X * Winput(:, i)) + sum(Xprev1 * Wprev1);
+    signal1 = ones(1,n); %Don't create signals for the bias neuron
+    signal1prev = ones(1,n); 
+    signal2 = ones(1,n);
+    signal2prev = ones(1,n); 
+    for i=1:n-1
+        signal1(1,i) = sum(X * Winput(:, i)); 
+        signal1prev(1,i) =  sum(Xprev1 * Wprev1(:,i));
     end
-    Y1 = tanh(signal1);
-    for i=1:n
-        signal2(1,i) = sum(Y1 * Winterior) + sum(Xprev2 * Wprev2);
+    Y1 = tanh(signal1 + signal1prev);
+    for i=1:n-1
+        signal2(1,i) = sum(Y1 * Winterior(:,i));
+        signal2prev(1, i) = sum(Xprev2 * Wprev2(:,i));
     end
-    Y2 = tanh(signal2);
+    Y2 = tanh(signal2 + signal2prev);
 end

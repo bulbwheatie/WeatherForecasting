@@ -10,7 +10,7 @@
 % signals1 = [s x n] input values to the squashing function for each hidden
 % signals2 = [s x n] input values to the squashing function for each hidden
 % layer in the forward pass
-function [Y, signals1, signals2] = feedForward_new(X, Winput, Winterior, Wprev1, Wprev2, Woutput) 
+function [Y, signals1, signals1prev, signals2, signals2prev] = feedForward_new(X, Winput, Winterior, Wprev1, Wprev2, Woutput) 
 
     s = size(X, 1);
     n = size(Wprev1, 1);
@@ -21,12 +21,15 @@ function [Y, signals1, signals2] = feedForward_new(X, Winput, Winterior, Wprev1,
     
     % TODO - save the signals into each layer
     signals1 = zeros(s, n); 
+    signals1prev = zeros(s, n);
     signals2 = zeros(s, n); 
+    signals2prev = zeros(s,n);
     
     Y = zeros(s, L);
     % For each sample in the sequence feed through the network    
     for i = 1:s
-        [Xprev1, Xprev2, signals1(i,:), signals2(i,:)] = feedForwardStack_new(X(i,:), Xprev1, Xprev2, Winput, Winterior, Wprev1, Wprev2);
+        [Xprev1, Xprev2, signals1(i,:), signals1prev(i,:), signals2(i,:), signals2prev(i,:)] = feedForwardStack_new(X(i,:), Xprev1, Xprev2, Winput, Winterior, Wprev1, Wprev2);
+        %Xprev2 = [Xprev2, ones(1)]; % Add the bias term
         Y(i,:) = Xprev2 * Woutput;
     end 
 end

@@ -1,76 +1,62 @@
 % TODO - erroar
 % Trains for a specified output feature
-function [Winput, Winterior, Wprev1, Wprev2, Woutput, error] = train_new(X, Winput, Winterior, Wprev1, Wprev2, Woutput, mode, batch_size, num_stacks)
+function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, error] = train_new(X, Winput, Winterior, Wprev1, Wprev2, Woutput, mode, batch_size, num_stacks)
     if (strcmp(mode, 'temp') == 1)
         % Only train against the 2nd column of the outputs
-        Y = X(2:size(X), 2);
+        Y = X(2:size(X), 1);
     else
         Y = X(2:size(X), :);
     end
 
     X = X(1:size(X)-1, :);
-    
-    epoch = 1;
-    batch_size = size(X, 1) - num_stacks + 1;
-    max_epochs = 50;
-    error = zeros(max_epochs, 1);
-        
-    for i=1:batch_size
-        %Forward pass through the network with a sequence of training data
-        [Ypred, signals1, signals2] = feedForward_new(X(i:i+num_stacks-1,2), Winput, Winterior, Wprev1, Wprev2, Woutput);
-        error(1, 1) = error(1, 1) + sum((Ypred(size(Ypred,1),:) - Y(i+num_stacks-1,:)).^2);
-    end
-    
-    while (epoch <= max_epochs)
-        lambda = 10^-1;
-        disp('Starting epoch...');
-        disp(epoch);
-        disp(error(epoch, 1));
-
+    iter = 1;
+    max_iters = batch_size*500;
+    lambda = 0.0001;
+    error = zeros(floor(max_iters/batch_size), 1);
+    tmp_error = 0;
+    i=0;
+    while (iter <= max_iters && tmp_error/batch_size < 20)
         Uinput = zeros(size(Winput));
         Uinterior = zeros(size(Winterior));
         Uprev1 = zeros(size(Wprev1));
         Uprev2 = zeros(size(Wprev2));
         Uoutput = zeros(size(Woutput));
-        
-        %calculate update weights
-        for i=1:batch_size
-            [DiN, DpN] = backpropagate_new(X(i:i+num_stacks-1,:), Y(i:i+num_stacks-1,:), signals1, signals2, Ypred, Winterior, Wprev1, Wprev2, Woutput);       
-            [Uinput, Uinterior, Uprev1, Uprev2, Uoutput] = calculateUpdates_new(Uinput, Uinterior, Uprev1, Uprev2, Uoutput, X, signals1, signals2, DiN, DpN);
-        end
-        
-        %adaptive learning rate
-        tmp_error = inf;
-        while tmp_error > error(epoch, 1)
-            disp('starting while loop');
-            disp(epoch);
-            disp(tmp_error);
-            disp(error(epoch,1));
-            disp(lambda);
-            tmp_Winput = Winput + lambda * Uinput/batch_size;
-            tmp_Winterior = Winterior + lambda * Uinterior/batch_size;
-            tmp_Wprev1 = Wprev1 + lambda * Uprev1/batch_size;
-            tmp_Wprev2 = Wprev2 + lambda * Uprev2/batch_size;
-            tmp_Woutput = Woutput + lambda * Uoutput/batch_size;
-            tmp_error = 0;
-            for i=1:batch_size
-                %Forward pass through the network with a sequence of training data
-                [Ypred, signals1, signals2] = feedForward_new(X(i:i+num_stacks-1,2), tmp_Winput, tmp_Winterior, tmp_Wprev1, tmp_Wprev2, tmp_Woutput);
-                tmp_error = tmp_error + sum((Ypred(size(Ypred,1),:) - Y(i+num_stacks-1,:)).^2);
+        tmp_error = 0;
+        for b=1:batch_size-1
+            if (i == size(X,1) - num_stacks)
+               i = 1;
+            else 
+                i = i + 1;
             end
-            lambda = lambda/10;
+            %i = mod(iter, size(X, 1) - num_stacks) + 1;
+
+            %Forward pass through the network with a sequence of training data
+            [Ypred, signals1, signals1prev, signals2, signals2prev] = feedForward_new(X(i:i+num_stacks-1,:), Winput, Winterior, Wprev1, Wprev2, Woutput);
+            tmp_error = tmp_error + sum((Ypred(size(Ypred,1),:) - Y(i+num_stacks-1,:)).^2);
+            
+            % Backpropagate and update weight matrices
+            [DjN, DiN, DpN] = backpropagate_new(X(i:i+num_stacks-1,:), Y(i:i+num_stacks-1,:), signals1 + signals1prev, signals2 + signals2prev, Ypred, Winterior, Wprev1, Wprev2, Woutput);       
+            [Uinput, Uinterior, Uprev1, Uprev2, Uoutput] = calculateUpdates_new(Uinput, Uinterior, Uprev1, Uprev2, Uoutput, X, signals1, signals1prev, signals2, signals2prev, DjN, DiN, DpN);
+            iter = iter + 1;
+        end
+        % Update the weight matrices based on average deltas
+        Winput = Winput + lambda * Uinput/(batch_size-1);
+        Winterior = Winterior + lambda * Uinterior/(batch_size-1);
+        Wprev1 = Wprev1 + lambda * Uprev1/(batch_size-1);
+        Wprev2 = Wprev2 + lambda * Uprev2/(batch_size-1);
+        Woutput = Woutput + lambda * Uoutput/(batch_size-1);
+        error(floor(iter/(batch_size-1)), 1) = tmp_error/(batch_size-1);
+        
+        % If the error is better, then store the weights
+        if (floor(iter/(batch_size-1)) == 1 || tmp_error/(batch_size-1) < error(floor(iter/(batch_size-1))-1)) 
+            Winput_min = Winput;
+            Winterior_min = Winterior;
+            Wprev1_min = Wprev1;
+            Wprev2_min = Wprev2;
+            Woutput_min = Woutput;
+            disp(error(floor(iter/(batch_size-1)), 1));
+
         end
         
-        Winput = tmp_Winput;
-        Winterior = tmp_Winterior;
-        Wprev1 = tmp_Wprev1;
-        Wprev2 = tmp_Wprev2;
-        Woutput = tmp_Woutput;
-        
-        error(epoch, 1) = tmp_error;
-        if (epoch < size(error, 1))
-            error(epoch+1, 1) = tmp_error;
-        end
-        epoch = epoch + 1;
     end 
 end
