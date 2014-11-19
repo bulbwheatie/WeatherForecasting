@@ -10,7 +10,7 @@ function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, error]
 
     X = X(1:size(X)-1, :);
     iter = 1;
-    max_iters = batch_size*500;
+    max_iters = batch_size*50;
     lambda = 0.0001;
     error = zeros(floor(max_iters/batch_size), 1);
     tmp_error = 0;
@@ -36,7 +36,7 @@ function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, error]
             
             % Backpropagate and update weight matrices
             [DjN, DiN, DpN] = backpropagate(X(i:i+num_stacks-1,:), Y(i:i+num_stacks-1,:), signals1 + signals1prev, signals2 + signals2prev, Ypred, Winterior, Wprev1, Wprev2, Woutput);       
-            [Uinput, Uinterior, Uprev1, Uprev2, Uoutput] = calculateUpdates(Uinput, Uinterior, Uprev1, Uprev2, Uoutput, X, signals1, signals1prev, signals2, signals2prev, DjN, DiN, DpN);
+            [Uinput, Uinterior, Uprev1, Uprev2, Uoutput] = calculateUpdates(Uinput, Uinterior, Uprev1, Uprev2, Uoutput, X(i:i+num_stacks-1,:), signals1, signals1prev, signals2, signals2prev, DjN, DiN, DpN);
             iter = iter + 1;
         end
         % Update the weight matrices based on average deltas
