@@ -3,7 +3,7 @@
 function checker_BP_small(data, std_mean)
     batch_size = 10;
     num_stacks = 12;
-    small_set = data(1:2000+num_stacks,2);
+    small_set = data(1:batch_size+num_stacks,2);
 
     
     %Random init of weights
