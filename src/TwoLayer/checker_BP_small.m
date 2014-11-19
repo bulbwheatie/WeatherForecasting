@@ -2,22 +2,26 @@
 
 function checker_BP_small(data, std_mean)
     batch_size = 10;
+    valid_size = 10;
     num_stacks = 12;
     small_set = data(1:batch_size+num_stacks,2);
+    valid_data = data(200:200+valid_size+num_stacks,2);
 
     
     %Random init of weights
     num_neurons  = 25;
     small_set = [small_set ones(size(small_set,1), 1)]; % Add bias feature
+    valid_data = [valid_data ones(size(valid_data,1), 1)]; % Add bias feature
+
     Winput_init = initWeights(2, num_neurons,-1/10, 1/10); % Create a d + 1 x n matrix for the extra bias feature
-    Winterior_init = initWeights(num_neurons + 1, num_neurons,-1/10, 1/10);
-    Wprev1_init = initWeights(num_neurons + 1, num_neurons,-1/10, 1/10);
-    Wprev2_init = initWeights(num_neurons + 1, num_neurons,-1/10, 1/10);
-    Woutput_init = initWeights(num_neurons + 1, 1, -1/2, 1/2); %Only single output feature in this case
+    Winterior_init = initWeights(num_neurons + 1, num_neurons,-1/2, 1/2);
+    Wprev1_init = initWeights(num_neurons + 1, num_neurons,-1/2, 1/2);
+    Wprev2_init = initWeights(num_neurons + 1, num_neurons,-1/2, 1/2);
+    Woutput_init = initWeights(num_neurons + 1, 1, -2, 2); %Only single output feature in this case
     
-    [Winput, Winterior, Wprev1, Wprev2, Woutput, error] = train_BP(small_set, Winput_init, Winterior_init, Wprev1_init, Wprev2_init, Woutput_init, 'temp', batch_size, num_stacks);
+    [Winput, Winterior, Wprev1, Wprev2, Woutput, train_error, valid_error] = train_BP(small_set, valid_data, Winput_init, Winterior_init, Wprev1_init, Wprev2_init, Woutput_init, 'temp', batch_size, num_stacks);
     
-    i = 2;
+    i = 1;
     X = data(i:i+num_stacks-1,2);
     X_naive = data(i:i+num_stacks-1,2);
     values_pred = zeros(6,1);
@@ -47,10 +51,10 @@ function checker_BP_small(data, std_mean)
     saveas(gcf, 'graphs/temperature2L.fig');
     
     %error
-    plot(1:size(error, 1), transpose(error));
-    legend('y = Squared error','Location','southeast');
+    plot(1:size(train_error, 1), transpose(train_error), 1:size(valid_error,1), transpose(valid_error));
+    legend('y = Squared train error', 'Y = Squared valid error', 'Location','southeast');
     saveas(gcf, 'graphs/train_error2L.fig');
     
-    save('checker_BP_small.mat', 'Winput', 'Wprev1', 'Wprev2', 'Winterior', 'Woutput', 'data', 'std_mean', 'error');
+    save('checker_BP_small.mat', 'Winput', 'Wprev1', 'Wprev2', 'Winterior', 'Woutput', 'data', 'std_mean', 'train_error', 'valid_error');
 end
 
