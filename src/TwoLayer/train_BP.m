@@ -12,9 +12,8 @@ function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_
 
     X = X(1:size(X)-1, :);
     Xvalid = Xvalid(1:size(Xvalid)-1, :);
-    iter = 1;
     max_iters = batch_size*300;
-    lambda = 0.1;
+    lambda = 0.01;
     train_error = zeros(floor(max_iters/batch_size), 1);
     valid_error = zeros(floor(max_iters/batch_size), 1);
     diff = 1000;
@@ -37,8 +36,10 @@ function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_
 
             %Forward pass through the network with a sequence of training data
             [Ypred, signals1, signals1prev, signals2, signals2prev] = feedForward(X(i:i+num_stacks-1,:), Winput, Winterior, Wprev1, Wprev2, Woutput);
-            tmp_error = tmp_error + sum((Ypred(size(Ypred,1),:) - Y(i+num_stacks-1,:)).^2);
-            
+            tmp_error = tmp_error + sum((Ypred(end,:) - Y(i+num_stacks-1,:)).^2);
+            %disp('Iter:');
+            %disp(Ypred(end,:));
+            %disp(Y(i+num_stacks-1,:));
             % Backpropagate and update weight matrices
             [DjN, DiN, DpN] = backpropagate(X(i:i+num_stacks-1,:), Y(i:i+num_stacks-1,:), signals1 + signals1prev, signals2 + signals2prev, Ypred, Winterior, Wprev1, Wprev2, Woutput);       
             [Uinput, Uinterior, Uprev1, Uprev2, Uoutput] = calculateUpdates(Uinput, Uinterior, Uprev1, Uprev2, Uoutput, X(i:i+num_stacks-1,:), signals1, signals1prev, signals2, signals2prev, DjN, DiN, DpN);
@@ -48,7 +49,7 @@ function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_
         %Run the validation data through the network
         for v=1:size(Xvalid,1) - num_stacks+1
             [Ypred, ~, ~, ~, ~] = feedForward(Xvalid(v:v+num_stacks-1,:), Winput, Winterior, Wprev1, Wprev2, Woutput);
-            val_error = val_error + sum((Ypred(size(Ypred,1),:) - Yvalid(v+num_stacks-1,:)).^2);
+            val_error = val_error + sum((Ypred(end,:) - Yvalid(v+num_stacks-1,:)).^2);
         end        
                 
         % If the error is better, then store the weights
@@ -78,4 +79,8 @@ function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_
             diff = abs(valid_error(floor(iter/(batch_size-1))-1) - val_error/(size(Xvalid,1) - num_stacks));
         end        
     end 
+    [Ypred, signals1, signals1prev, signals2, signals2prev] = feedForward(X(1:1+num_stacks-1,:), Winput, Winterior, Wprev1, Wprev2, Woutput);
+    Ypred
+    Y(1:1+num_stacks-1,:)
+    'hi'
 end

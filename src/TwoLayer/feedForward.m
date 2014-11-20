@@ -29,8 +29,8 @@ function [Y, signals1, signals1prev, signals2, signals2prev] = feedForward(X, Wi
     % For each sample in the sequence feed through the network    
     for i = 1:s
         [Xprev1, Xprev2, signals1(i,:), signals1prev(i,:), signals2(i,:), signals2prev(i,:)] = feedForwardStack(X(i,:), Xprev1, Xprev2, Winput, Winterior, Wprev1, Wprev2);
-        %Xprev2 = [Xprev2, ones(1)]; % Add the bias term
-        Y(i,:) = Xprev2 * Woutput;
+        %Y(i,:) = Xprev2 * Woutput;
+        Y(i,:) = (signals2(i,:) + signals2prev(i,:)) * Woutput; %Remove the squashing function from the output layer
     end 
 end
 
