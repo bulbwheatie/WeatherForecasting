@@ -18,7 +18,6 @@ function [data, std_mean] = getData_struct(mode, num_stacks)
     end
     
     num_features = 6;
-    num_stacks = 4;
     samples_per_file = 365 * 24/4 - (2 * num_stacks) + 1;
     
     dataX = zeros(num_stacks, num_features+1, samples_per_file);
