@@ -4,7 +4,7 @@ function crossval_neurons_MC()
     neurons = [4, 8, 16, 32, 64];
     error = zeros(length(neurons), 1);
     num_stacks = 4;
-    epochs = 1;
+    epochs = 20;
     for i=1:length(neurons)
         %Random init of weights
         Winput = initWeights(size(data, 2), neurons(i),-1, 1); % Create a d + 1 x n matrix for the extra bias feature
@@ -17,7 +17,7 @@ function crossval_neurons_MC()
 
         %error
         error(i) = error_vec(length(error_vec));
+        save('crossval_neuron_error.mat', 'error', 'neurons');
     end
-    save('crossval_neuron_error.mat', 'error', 'neurons');
     plot(neurons, transpose(error));
 end

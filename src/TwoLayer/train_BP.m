@@ -13,8 +13,8 @@ function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_
     X = X(1:size(X)-1, :);
     Xvalid = Xvalid(1:size(Xvalid)-1, :);
     iter = 1;
-    max_iters = batch_size*500;
-    lambda = 0.000001;
+    max_iters = batch_size*300;
+    lambda = 0.1;
     train_error = zeros(floor(max_iters/batch_size), 1);
     valid_error = zeros(floor(max_iters/batch_size), 1);
     diff = 1000;
@@ -52,13 +52,14 @@ function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_
         end        
                 
         % If the error is better, then store the weights
-        if (floor(iter/(batch_size-1)) == 1 || tmp_error/(batch_size-1) <= train_error(floor(iter/(batch_size-1))-1) ) 
+        if (floor(iter/(batch_size-1)) == 1 || tmp_error/(batch_size-1) <= min_error ) 
             Winput_min = Winput;
             Winterior_min = Winterior;
             Wprev1_min = Wprev1;
             Wprev2_min = Wprev2;
             Woutput_min = Woutput;
-            disp(tmp_error/(batch_size-1));
+            min_error = tmp_error/(batch_size-1)
+            disp(min_error);
         end
         
         % Update the weight matrices based on average deltas

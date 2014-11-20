@@ -33,7 +33,7 @@ function [DjN, DiN, DpN] = backpropagate(X, Y, signals1, signals2, Ypred, Winter
     % outputs, DjT values (also a row)
     DiN = zeros(s, n);
     for i = 1:n
-        DiN(s, i) = (Woutput(i, :) .* DjN(s,:)') * (1 - tanh(signals2(s,i))^2);
+        DiN(s, i) = (Woutput(i, :) * DjN(s,:)') * (1 - tanh(signals2(s,i))^2);
     end
     
     % Calculate delta terms for each hidden neuron in each stack prior to
@@ -42,7 +42,7 @@ function [DjN, DiN, DpN] = backpropagate(X, Y, signals1, signals2, Ypred, Winter
     % DiN(1,2) delta for the first neuron in the 2nd stack layer
     for t = s-1:-1:1
         for i = 1:n
-            DiN(t, i) = ((DiN(t+1,1:end-1) * Wprev2(i,:)') + (DjN(t,:) * Woutput(i,:))) * (1 - tanh(signals2(t,i))^2);
+            DiN(t, i) = ((DiN(t+1,1:end-1) * Wprev2(i,:)') + (DjN(t,:) * Woutput(i,:)')) * (1 - tanh(signals2(t,i))^2);
         end
     end
     
