@@ -3,7 +3,7 @@
 function checker_BP_small(data, std_mean)
     batch_size = 10;
     valid_size = 5;
-    num_stacks = 3;
+    num_stacks = 6;
     small_set = data(1:batch_size+num_stacks,2);
     valid_data = data(200:200+valid_size+num_stacks,2);
 
@@ -39,7 +39,7 @@ function checker_BP_small(data, std_mean)
 
         [naive_y, ~, ~] = feedForward([X_naive ones(size(X_naive,1), 1)], Winput_init, Winterior_init, Wprev1_init, Wprev2_init, Woutput_init);
         values_naive(j,:) = (naive_y(end,1) .* std_mean(1,2)) + std_mean(2,2);
-        %naive_full = data(i+17+j,:);
+        %naive_full = data(i+17+j,:);   
         %naive_full(1,2) = values_naive(j,:);
         X_naive = [X_naive(2:size(X_naive,1)) ; naive_y(end,1)];
     end
