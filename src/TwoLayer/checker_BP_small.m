@@ -4,9 +4,8 @@ function checker_BP_small(data, std_mean)
     batch_size = 10;
     valid_size = 5;
     num_stacks = 6;
-    small_set = data(1:batch_size+num_stacks,2);
+    small_set = data(1:2000+num_stacks,2);
     valid_data = data(200:200+valid_size+num_stacks,2);
-
     
     %Random init of weights
     num_neurons  = 5;

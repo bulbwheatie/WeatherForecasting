@@ -12,27 +12,28 @@ function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_
 
     X = X(1:size(X)-1, :);
     Xvalid = Xvalid(1:size(Xvalid)-1, :);
+    iter = 1;
     max_iters = batch_size*300;
     lambda = 0.01;
     train_error = zeros(floor(max_iters/batch_size), 1);
-    valid_error = zeros(floor(max_iters/batch_size), 1);
+    valid_error = zeros(floor(max_iters/batch_size), 1); %Store interals with the same value
     diff = 1000;
+    valid_sum = 0;
+    lookback = 1;
     i=0;
-    while (iter <= max_iters)
+    while (iter <= max_iters && diff > 10^-5)
         Uinput = zeros(size(Winput));
         Uinterior = zeros(size(Winterior));
         Uprev1 = zeros(size(Wprev1));
         Uprev2 = zeros(size(Wprev2));
         Uoutput = zeros(size(Woutput));
         tmp_error = 0;
-        val_error = 0;
         for b=1:batch_size-1
             if (i == size(X,1) - num_stacks)
                i = 1;
             else 
                 i = i + 1;
             end
-            %i = mod(iter, size(X, 1) - num_stacks) + 1;
 
             %Forward pass through the network with a sequence of training data
             [Ypred, signals1, signals1prev, signals2, signals2prev] = feedForward(X(i:i+num_stacks-1,:), Winput, Winterior, Wprev1, Wprev2, Woutput);
@@ -49,7 +50,7 @@ function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_
         %Run the validation data through the network
         for v=1:size(Xvalid,1) - num_stacks+1
             [Ypred, ~, ~, ~, ~] = feedForward(Xvalid(v:v+num_stacks-1,:), Winput, Winterior, Wprev1, Wprev2, Woutput);
-            val_error = val_error + sum((Ypred(end,:) - Yvalid(v+num_stacks-1,:)).^2);
+            valid_sum = valid_sum + sum((Ypred(end,:) - Yvalid(v+num_stacks-1,:)).^2);
         end        
                 
         % If the error is better, then store the weights
@@ -59,7 +60,7 @@ function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_
             Wprev1_min = Wprev1;
             Wprev2_min = Wprev2;
             Woutput_min = Woutput;
-            min_error = tmp_error/(batch_size-1)
+            min_error = tmp_error/(batch_size-1);
             disp(min_error);
         end
         
@@ -72,15 +73,11 @@ function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_
         train_error(floor(iter/(batch_size-1)), 1) = tmp_error/(batch_size-1);
         
         %Update validation error
-        valid_error(floor(iter/(batch_size-1)), 1) = val_error/(size(Xvalid,1) - num_stacks);
-        if (floor(iter/(batch_size-1)) == 1)
+        valid_error(floor(iter/(batch_size-1)), 1) = valid_sum/iter;
+        if (floor(iter/(batch_size-1)) <= lookback)
             diff = 1000;
         else
-            diff = abs(valid_error(floor(iter/(batch_size-1))-1) - val_error/(size(Xvalid,1) - num_stacks));
+            diff = abs(valid_error(floor(iter/(batch_size-1))-lookback) - valid_sum/iter);
         end        
     end 
-    [Ypred, signals1, signals1prev, signals2, signals2prev] = feedForward(X(1:1+num_stacks-1,:), Winput, Winterior, Wprev1, Wprev2, Woutput);
-    Ypred
-    Y(1:1+num_stacks-1,:)
-    'hi'
 end
