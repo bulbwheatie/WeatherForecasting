@@ -25,9 +25,9 @@ function cross_validate_BP()
         Wprev2_init = initWeights(neurons(i)+1, neurons(i),-1/10, 1/10);
         Woutput_init = initWeights(neurons(i)+1, size(data.trainY, 2), -1/2, 1/2); %Only single output feature in this case
 
-        [Winput, Winterior, Wprev1, Wprev2, Woutput, train_error, error_vec] = train_BP_struct(data, Winput_init, Winterior_init, Wprev1_init, Wprev2_init, Woutput_init, batch_size);
+        [Winput, Winterior, Wprev1, Wprev2, Woutput, error_vec, validate_vec, test_error] = train_BP_struct(data, Winput_init, Winterior_init, Wprev1_init, Wprev2_init, Woutput_init, batch_size);
     
-        errorn(i,1) = error_vec(length(error_vec));
+        errorn(i,1) = test_error;
         
         if i==1
             save('cross_validate_BP1n.mat', 'errorn', 'neurons', 'error_vec', 'data', 'Winput', 'Winterior', 'Wprev1', 'Wprev2', 'Woutput');
@@ -61,9 +61,9 @@ function cross_validate_BP()
         Wprev2_init = initWeights(num_neurons+1, num_neurons,-1/10, 1/10);
         Woutput_init = initWeights(num_neurons+1, size(data.trainY, 2), -1/2, 1/2); %Only single output feature in this case
 
-        [Winput, Winterior, Wprev1, Wprev2, Woutput, train_error, error_vec] = train_BP_struct(data, Winput_init, Winterior_init, Wprev1_init, Wprev2_init, Woutput_init, batch_size);
+        [Winput, Winterior, Wprev1, Wprev2, Woutput, error_vec, validate_vec, test_error] = train_BP_struct(data, Winput_init, Winterior_init, Wprev1_init, Wprev2_init, Woutput_init, batch_size);
     
-        errors(i,1) = error_vec(length(error_vec));
+        errors(i,1) = test_error;
         
         if i==1
             save('cross_validate_BP1s.mat', 'errors', 'neurons', 'error_vec', 'data', 'Winput', 'Winterior', 'Wprev1', 'Wprev2', 'Woutput');
@@ -83,15 +83,15 @@ function cross_validate_BP()
     end
     
     %error
-    plot(neurons, transpose(errorn(:,1)));
+    %plot(neurons, transpose(errorn(:,1)));
     %plot(1:length(train_error_vec), transpose(train_error_vec));
-    legend('y = Squared error', 'x = Number of Neurons', 'Location','southeast');
-    saveas(gcf, 'cross_val_error_BPn.fig');
+    %legend('y = Squared error', 'x = Number of Neurons', 'Location','southeast');
+    %saveas(gcf, 'cross_val_error_BPn.fig');
         
     %error
-    plot(num_stacks, transpose(errors(:,1)));
+    %plot(num_stacks, transpose(errors(:,1)));
     %plot(1:length(train_error_vec), transpose(train_error_vec));
-    legend('y = Squared error','x = Number of Stacks', 'Location','southeast');
-    saveas(gcf, 'cross_val_error_BPs.fig');
+    %legend('y = Squared error','x = Number of Stacks', 'Location','southeast');
+    %saveas(gcf, 'cross_val_error_BPs.fig');
 end
 
