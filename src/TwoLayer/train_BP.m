@@ -21,7 +21,7 @@ function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_
     valid_sum = 0;
     lookback = 1;
     i=0;
-    while (iter <= max_iters && diff > 10^-5)
+    while (iter <= max_iters && diff > 10^-4)
         Uinput = zeros(size(Winput));
         Uinterior = zeros(size(Winterior));
         Uprev1 = zeros(size(Wprev1));
