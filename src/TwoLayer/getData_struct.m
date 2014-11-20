@@ -10,7 +10,7 @@
 %   and the row as the third value.
 %validateX, validateY, trainX, and trainY are all in the same format.
 
-function [data, std_mean] = getData_struct(mode)
+function [data, std_mean] = getData_struct(mode, num_stacks)
     if strcmp(mode, 'all')
         files = dir('../../data/*.txt');
     else
