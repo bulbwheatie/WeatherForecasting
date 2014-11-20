@@ -1,15 +1,16 @@
 % TODO - erroar
 % Trains for a specified output feature
-function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_error, valid_error] = train_BP_struct(data, Winput, Winterior, Wprev1, Wprev2, Woutput, batch_size)
+function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_error, valid_error, test_error] = train_BP_struct(data, Winput, Winterior, Wprev1, Wprev2, Woutput, batch_size)
     iter = 1;
-    max_iters = batch_size*500;
-    lambda = 0.01;
+    max_iters = batch_size*1000;
+    lambda = 0.005;
     train_error = zeros(floor(max_iters/batch_size), 1);
     valid_error = zeros(floor(max_iters/batch_size), 1); %Store interals with the same value
     diff = 1000;
     valid_sum = 0;
     lookback = 1;
     i=0;
+    min_error = inf;
     while (iter <= max_iters && diff > 10^-4)
         Uinput = zeros(size(Winput));
         Uinterior = zeros(size(Winterior));
@@ -37,19 +38,22 @@ function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_
         end
         
         %Run the validation data through the network
+        valid_error = 0;
         for v=1:size(data.validateX,3)
             [Ypred, ~, ~, ~, ~] = feedForward(data.validateX(:,:,v), Winput, Winterior, Wprev1, Wprev2, Woutput);
-            valid_sum = valid_sum + sum((Ypred(end,:) - data.validateY(end,:,v)).^2);
-        end        
+            valid_error = valid_error + sum((Ypred(end,:) - data.validateY(end,:,v)).^2);
+        end
+        valid_sum = valid_sum + valid_error;
+        valid_error = valid_error / size(data.validateX,3);
                 
         % If the error is better, then store the weights
-        if (floor(iter/(batch_size-1)) == 1 || tmp_error/(batch_size-1) <= min_error ) 
+        if valid_error <= min_error
             Winput_min = Winput;
             Winterior_min = Winterior;
             Wprev1_min = Wprev1;
             Wprev2_min = Wprev2;
             Woutput_min = Woutput;
-            min_error = tmp_error/(batch_size-1);
+            min_error = valid_error;
             disp(min_error);
         end
         
@@ -68,5 +72,11 @@ function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_
         else
             diff = abs(valid_error(floor(iter/(batch_size-1))-lookback) - valid_sum/iter);
         end        
-    end 
+    end
+    test_error = 0;
+    for i=1:size(data.testX,3)
+        [Ypred, ~, ~, ~, ~] = feedForward(data.testX(:,:,i), Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min);
+        test_error = test_error + sum((Ypred(end,:) - data.testY(end,:,i)).^2);
+    end
+    test_error = test_error/size(data.testX,3);
 end
