@@ -21,9 +21,9 @@ function [DjN, DiN, DpN] = backpropagate(X, Y, signals1, signals2, Ypred, Winter
     % DjN = [s x L] deltas for the final output vector (linear node)
     % i.e. DjN(1,1) corresponds to the delta term for the 1st output
     % feature of the 1st stack 
-    %DjN = zeros(size(Y));
-    %DjN(s) = Y(s) - Ypred(s);
-    DjN = Y-Ypred;
+    DjN = zeros(size(Y));
+    DjN(s) = Y(s) - Ypred(s);
+    %DjN = Y-Ypred;
     
     % DiT = [1 x n] deltas for the hidden nodes in the final layer
     % (squashing present)

@@ -13,8 +13,8 @@ function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_
     X = X(1:size(X)-1, :);
     Xvalid = Xvalid(1:size(Xvalid)-1, :);
     iter = 1;
-    max_iters = batch_size*500;
-    lambda = 0.000001;
+    max_iters = batch_size*1000;
+    lambda = 0.0001;
     train_error = zeros(floor(max_iters/batch_size), 1);
     valid_error = zeros(floor(max_iters/batch_size), 1);
     diff = 1000;
@@ -77,4 +77,8 @@ function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_
             diff = abs(valid_error(floor(iter/(batch_size-1))-1) - val_error/(size(Xvalid,1) - num_stacks));
         end        
     end 
+    [Ypred, signals1, signals1prev, signals2, signals2prev] = feedForward(X(1:1+num_stacks-1,:), Winput, Winterior, Wprev1, Wprev2, Woutput);
+    Ypred
+    Y(1:1+num_stacks-1,:)
+    'hi'
 end
