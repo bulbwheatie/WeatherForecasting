@@ -2,7 +2,7 @@
 function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_error, valid_error, test_error] = train_BP_lookahead(data, Winput, Winterior, Wprev1, Wprev2, Woutput, batch_size, batches, lookahead)
     iter = 1;
     max_iters = batches;
-    lambda_init = 0.05
+    lambda_init = 0.1
     train_error = zeros(batches, 1);
     valid_error = zeros(batches, 1); 
     diff = 1000;

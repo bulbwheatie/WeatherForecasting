@@ -4,8 +4,8 @@ function checker_BP_lookahead(data, order_data, std_mean)
     feature_num = 2; %Temperature
     batch_size = 10;
     num_stacks = 8; %data should have num_stacks + lookahead stacks
-    lookahead = 0;
-    batches = 50;
+    lookahead = 1;
+    batches = 100;
     data.trainY = data.trainY(:,feature_num, :); %Get a single output feature
     data.validateY = data.validateY(:,feature_num, :);
     data.testY = data.testY(:, feature_num, :);
@@ -30,7 +30,7 @@ function checker_BP_lookahead(data, order_data, std_mean)
         [temp_y, ~, ~,~, ~] = feedForward([X ones(size(X,1), 1)], Winput, Winterior, Wprev1, Wprev2, Woutput);
         values_pred(j,:) = (temp_y(end,:) .* std_mean(1,2)) + std_mean(2,2);
         values_full = order_data(i+num_stacks + j -1 ,:);
-        %values_full(1,2) = temp_y(end,:);
+        values_full(1,2) = temp_y(end,:);
         X = [X(2:size(X,1), :) ; values_full];
     end
     
