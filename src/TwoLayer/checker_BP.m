@@ -1,55 +1,49 @@
-function error = checker_BP(data, std_mean)
-    % Create a small data set and run the entire set through the training
-    % process for each update and check that the error is indeed reducing.
-    feature_num = 2; %Temperature
-    batch_size = 10;
-    num_stacks = 8;
-    batches = 50;
-    data.trainY = data.trainY(:,2, :);
-    data.validateY = data.validateY(:,2, :);
-    data.testY = data.testY(:, 2, :);
+% Models the temperature output based on all features
 
+function checker_final_adaptive()
+    batch_size = 100;
+    num_stacks = 8;
+    num_neurons = 30;
+    batches = 10;
+    [data, std_mean] = getData_struct('one', num_stacks);
+    num_features = size(data.trainY,2);
+    for i=1:num_features
+        datas(i) = data;
+        datas(i).trainY = data.trainY(:,i,:);
+        datas(i).validateY = data.validateY(:,i,:);
+        datas(i).testY = data.testY(:,i,:);
+    end
+    
     %Random init of weights
-    num_neurons  = 30;
     Winput_init = initWeights(size(data.trainX,2), num_neurons,-1/10, 1/10); % Create a d + 1 x n matrix for the extra bias feature
     Winterior_init = initWeights(num_neurons+1, num_neurons,-1/10, 1/10);
     Wprev1_init = initWeights(num_neurons+1, num_neurons,-1/10, 1/10);
     Wprev2_init = initWeights(num_neurons+1, num_neurons,-1/10, 1/10);
-    Woutput_init = initWeights(num_neurons+1, size(data.trainY, 2), -1/2, 1/2); %Only single output feature in this case
-   
-    [Winput, Winterior, Wprev1, Wprev2, Woutput, train_error, valid_error, test_error] = train_BP_adaptive(data, Winput_init, Winterior_init, Wprev1_init, Wprev2_init, Woutput_init, batch_size, batches);
+    Woutput_init = initWeights(num_neurons+1, size(datas(1).trainY, 2), -1/2, 1/2); %Only single output feature in this case
+
+    Winputs = zeros(size(Winput_init, 1), size(Winput_init, 2), num_features);
+    Winteriors = zeros(size(Winterior_init, 1), size(Winterior_init, 2), num_features);
+    Wprev1s = zeros(size(Wprev1_init, 1), size(Wprev1_init, 2), num_features);
+    Wprev2s = zeros(size(Wprev2_init, 1), size(Wprev2_init, 2), num_features);
+    Woutputs = zeros(size(Woutput_init, 1), size(Woutput_init, 2), num_features);
     
-    i = 1;
-    X = data.testX(:, :, i:i+num_stacks-1);
-    values_pred = zeros(6,1);
-    values_actual = data.testY(:, :, i:i+num_stacks-1);
-    
-    for j=1:6
-        [temp_y, ~, ~,~, ~] = feedForward(X, Winput, Winterior, Wprev1, Wprev2, Woutput);
-        values_pred(j,:) = (temp_y(j,1) .* std_mean(1,2)) + std_mean(2,2);
-        values_actual(j,:) = (values_actual(j,1) .* std_mean(1,2)) + std_mean(2,2); %Restore the actual values too
-        values_full = data.trainX(:,:,i+num_stacks-1+j);
-        values_full(1,feature_num) = values_pred(j,:); 
-        X = [X(2:size(X,1)) ; values_full];
+    train_errors = zeros(batches, num_features);
+    validate_errors = zeros(batches, num_features);
+    test_errors = zeros(size(data.trainX, 2), 1);
+
+    for i=1:num_features
+        disp(i);
+        [Winput, Winterior, Wprev1, Wprev2, Woutput, train_error, validate_error, test_error] = train_BP_adaptive(datas(i), Winput_init, Winterior_init, Wprev1_init, Wprev2_init, Woutput_init, batch_size, batches);
+        Winputs(:,:,i) = Winput;
+        Winteriors(:,:,i) = Winterior;
+        Wprev1s(:,:,i) = Wprev1;
+        Wprev2s(:,:,i) = Wprev2;
+        Woutputs(:,:,i) = Woutput;
+        train_errors(:, i) = train_error;
+        validate_errors(:, i) = validate_error;
+        test_errors(i) = test_error;
     end
     
-    x_axis = (1:size(values_pred, 1) )* 4;
-    
-    %temperature -- comapre naive to trained
-    plot(x_axis, transpose(values_pred(:,1)), x_axis, transpose(values_actual(:,1)));
-    legend('y = Predicted temperature', 'y = Naive temperature', 'y = Actual temperature','Location','southoutside');
-    xlabel('Time (hours)');
-    ylabel('Temperature(C)');
-    saveas(gcf, 'graphs/temperature2L.fig');
-    
-    %error
-    plot(1:size(train_error, 1), transpose(train_error), 1:size(valid_error,1), transpose(valid_error));
-    legend('y = Squared train error', 'Y = Squared valid error', 'Location','southeast');
-    xlabel('Iterations');
-    ylabel('Squared Error');
-    title('Training and Validation Error for Batch Train');
-    saveas(gcf, 'graphs/train_error2L.fig');
-    
-    save('checker_BP.mat', 'Winput', 'Wprev1', 'Wprev2', 'Winterior', 'Woutput', 'data', 'std_mean', 'train_error', 'valid_error', 'test_error');
-    
+    save('final_weights_adaptive.mat', 'test_errors', 'train_errors', 'validate_errors', 'datas', 'Winputs', 'Winteriors', 'Wprev1s', 'Wprev2s', 'Woutputs', 'std_mean');
 end
+
