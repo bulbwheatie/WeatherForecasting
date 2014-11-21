@@ -1,4 +1,21 @@
-% Trains for a specified output feature
+% Trains for a specified output feature based on an in order data sequence
+% USED to validate backpropagation functions; should not be used for actual
+% training
+
+% Inputs:
+% data = [m x d] where m is number of samples and d is features with bias
+% applied
+% N= number of neurons
+% Winput = [d+1 x N] where d+1 is the number of input features + a bias 
+% Winterior = Wprev1 = Wprev2 = [N+1 x N] (same size but different values)
+% Woutput = [N+1 x l] where l is the nubmer of output features
+% batch_size = number of iterations before updating weights
+% num_stacks = number of stacks in the network
+
+% Outputs
+% Weight matrices = same size as respective input corresponding to the
+% lowest validation error
+% errors = [iter x 1]
 function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_error, valid_error] = train_BP(X, Xvalid, Winput, Winterior, Wprev1, Wprev2, Woutput, mode, batch_size, num_stacks)
     if (strcmp(mode, 'temp') == 1)
         % Only train against the 2nd column of the outputs
