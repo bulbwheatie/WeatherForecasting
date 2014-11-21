@@ -1,7 +1,7 @@
 function checker_MC()
-    num_stacks = 6;
+    num_stacks = 8;
     num_neurons = 10;
-    epochs = 15;
+    epochs = 30;
     [data, std_mean] = getData_struct('one', num_stacks);
     num_features = size(data.trainY,2);
     for i=1:num_features
