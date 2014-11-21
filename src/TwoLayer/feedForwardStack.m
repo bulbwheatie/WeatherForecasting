@@ -1,17 +1,20 @@
-% Performs a feedForward through a layer of the stack
+% Performs a feedForward through a stack of the network
 
 % X = [1 x d] input feature vector
 % Xprev1 = [1 x n] signals from previous stack layer1
 % Xprev2 = [1 x n] signals from previous stack layer2
 % Winput = [n x d] weight matrix for the input vector
-% Winterior = [n x n] weight matrix for between layer1 and layer2
-% Wprev1 = [n x n] weight matrix for between layer1s between stacks
-% Wprev2 = [n x n] weight matrix for between layer2s between stacks
+% Winterior = [n+1 x n] weight matrix for between layer1 and layer2
+% Wprev1 = [n+1 x n] weight matrix for between layer1s between stacks
+% Wprev2 = [n+1 x n] weight matrix for between layer2s between stacks
+% +1 for bias
 
 % Y1 = [1 x n] squashed signals of layer1
 % Y2 = [1 x n] squashed signals of layer2
-% signal1 = [1 x n] signals of layer1 prior to squashing
-% signal2 = [1 x n] signals of layer2 prior to squashing
+% signal1 = [1 x n] signals of layer1 from the same stack prior to squashing
+% signal2 = [1 x n] signals of layer2 from the same stack prior to squashing
+% signal1prev = [1 x n] signals of layer1 from the previous layer prior to squashing
+% signal2prev = [1 x n] signals of layer2 from the previous layer prior to squashing
 
 function [Y1, Y2, signal1, signal1prev, signal2, signal2prev] = feedForwardStack(X, Xprev1, Xprev2, Winput, Winterior, Wprev1, Wprev2) 
     n = size(Wprev1,1);
