@@ -1,17 +1,20 @@
 % Models the temperature output based on all features
 
 function checker_final()
-    batch_size = 10;
+    batch_size = 100;
     num_stacks = 8;
     num_neurons = 30;
-    batches = 1000;
+    batches = 5000;
     [data, std_mean] = getData_struct('one', num_stacks);
     num_features = size(data.trainY,2);
     for i=1:num_features
         datas(i) = data;
+%        datas(i).trainX = data.trainX(:,:,1:10);
         datas(i).trainY = data.trainY(:,i,:);
-        datas(i).validateY = data.trainY(:,i,:);
-        datas(i).testY = data.trainY(:,i,:);
+%        datas(i).validateX = data.trainX(:,:,1:10);
+        datas(i).validateY = data.validateY(:,i,:);
+%        datas(i).testX = data.testX(:,:,1:10);
+        datas(i).testY = data.testY(:,i,:);
     end
     
     %Random init of weights
@@ -29,7 +32,7 @@ function checker_final()
     
     train_errors = zeros(floor(batches*batch_size/(batch_size-1))+1, num_features);
     validate_errors = zeros(floor(batches*batch_size/(batch_size-1))+1, num_features);
-    test_errors = zeros(size(data.trainX, 1), 1);
+    test_errors = zeros(size(data.trainX, 2), 1);
 
     for i=1:num_features
         disp(i);
