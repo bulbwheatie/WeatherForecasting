@@ -4,8 +4,8 @@ function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_
     iter = 1;
     max_iters = batch_size*batches;
     lambda = 0.005;
-    train_error = zeros(floor(max_iters/batch_size), 1);
-    valid_error = zeros(floor(max_iters/batch_size), 1); %Store interals with the same value
+    train_error = zeros(batches, 1);
+    valid_error = zeros(batches, 1); %Store interals with the same value
     diff = 1000;
     valid_sum = 0;
     lookback = 1;
@@ -38,22 +38,22 @@ function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_
         end
         
         %Run the validation data through the network
-        valid_error = 0;
+        valid_error_tmp = 0;
         for v=1:size(data.validateX,3)
             [Ypred, ~, ~, ~, ~] = feedForward(data.validateX(:,:,v), Winput, Winterior, Wprev1, Wprev2, Woutput);
-            valid_error = valid_error + sum((Ypred(end,:) - data.validateY(end,:,v)).^2);
+            valid_error_tmp = valid_error_tmp + sum((Ypred(end,:) - data.validateY(end,:,v)).^2);
         end
-        valid_sum = valid_sum + valid_error;
-        valid_error = valid_error / size(data.validateX,3);
+        valid_sum = valid_sum + valid_error_tmp;
+        valid_error_tmp = valid_error_tmp / size(data.validateX,3);
                 
         % If the error is better, then store the weights
-        if valid_error <= min_error
+        if valid_error_tmp <= min_error
             Winput_min = Winput;
             Winterior_min = Winterior;
             Wprev1_min = Wprev1;
             Wprev2_min = Wprev2;
             Woutput_min = Woutput;
-            min_error = valid_error;
+            min_error = valid_error_tmp;
             disp(min_error);
         end
         
@@ -70,7 +70,7 @@ function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_
         if (floor(iter/(batch_size-1)) <= lookback)
             diff = 1000;
         else
-            diff = abs(valid_error(floor(iter/(batch_size-1))-lookback) - valid_sum/iter);
+            diff = abs(valid_error(floor(iter/(batch_size-1))-lookback,1) - valid_sum/iter);
         end        
     end
     test_error = 0;
