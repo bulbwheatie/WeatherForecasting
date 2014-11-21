@@ -1,36 +1,41 @@
-function checker_MC(raw_data, std_mean)
-    %std_mean = raw_std_mean(:,2);
-    data = [ones(size(raw_data, 1), 1) raw_data];
-    %Random init of weights
-    Winput = initWeights(size(data, 2), num_neurons,-1, 1); % Create a d + 1 x n matrix for the extra bias feature
-    Winterior = initWeights(num_neurons, num_neurons,-1, 1);
-    Wprev1 = initWeights(num_neurons, num_neurons,-1, 1);
-    Wprev2 = initWeights(num_neurons, num_neurons,-1, 1);
-    Woutput = initWeights(num_neurons, size(raw_data, 2), -2, 2);
-
+function checker_MC()
     num_stacks = 6;
-    epochs = 6;
-
-    [Winput, Winterior, Wprev1, Wprev2, Woutput, error] = train_MC(data, Winput, Winterior, Wprev1, Wprev2, Woutput, num_stacks, epochs);
-
-    loaded_data = data;
-    save('post_checker_MC.mat', 'loaded_data', 'std_mean', 'Winput', 'Winterior', 'Wprev1', 'Wprev2', 'Woutput', 'error', 'num_stacks', 'epochs');
-
-
-    %error
-    plot(1:length(error), transpose(error));
-    legend('y = Mean Squared Error','Location','southeast');
-    saveas(gcf, 'error.fig');
-    
-     output_stacks = 3;
-
-    
-    for i=[1, 500, 1000, 1500, 2000]
-        createGraphs(data, std_mean, Winput, Winterior, Wprev1, Wprev2, Woutput, num_stacks, output_stacks, i, 1, 'Visibility');
-        createGraphs(data, std_mean, Winput, Winterior, Wprev1, Wprev2, Woutput, num_stacks, output_stacks, i, 2, 'Temperature');
-        createGraphs(data, std_mean, Winput, Winterior, Wprev1, Wprev2, Woutput, num_stacks, output_stacks, i, 3, 'Dewpoint');
-        createGraphs(data, std_mean, Winput, Winterior, Wprev1, Wprev2, Woutput, num_stacks, output_stacks, i, 4, 'Windspeed');
-        createGraphs(data, std_mean, Winput, Winterior, Wprev1, Wprev2, Woutput, num_stacks, output_stacks, i, 5, 'WindDirection');
-        createGraphs(data, std_mean, Winput, Winterior, Wprev1, Wprev2, Woutput, num_stacks, output_stacks, i, 6, 'Pressure');
+    num_neurons = 10;
+    epochs = 15;
+    [data, std_mean] = getData_struct('one', num_stacks);
+    num_features = size(data.trainY,2);
+    for i=1:num_features
+        datas(i) = data;
+        datas(i).trainY = data.trainY(:,i,:);
+        datas(i).validateY = data.validateY(:,i,:);
+        datas(i).testY = data.testY(:,i,:);
     end
+    
+    %Random init of weights
+    Winput_init = initWeights(size(data.trainX,2), num_neurons,-1/10, 1/10); % Create a d + 1 x n matrix for the extra bias feature
+    Winterior_init = initWeights(num_neurons+1, num_neurons,-1/10, 1/10);
+    Wprev1_init = initWeights(num_neurons+1, num_neurons,-1/10, 1/10);
+    Wprev2_init = initWeights(num_neurons+1, num_neurons,-1/10, 1/10);
+    Woutput_init = initWeights(num_neurons+1, size(datas(1).trainY, 2), -1/2, 1/2); %Only single output feature in this case
+
+    Winputs = zeros(size(Winput_init, 1), size(Winput_init, 2), num_features);
+    Winteriors = zeros(size(Winterior_init, 1), size(Winterior_init, 2), num_features);
+    Wprev1s = zeros(size(Wprev1_init, 1), size(Wprev1_init, 2), num_features);
+    Wprev2s = zeros(size(Wprev2_init, 1), size(Wprev2_init, 2), num_features);
+    Woutputs = zeros(size(Woutput_init, 1), size(Woutput_init, 2), num_features);
+    
+    errors = zeros(epochs, num_features);
+
+    for i=1:num_features
+        disp(i);
+        [Winput, Winterior, Wprev1, Wprev2, Woutput, error] = train_MC(datas(i), Winput_init, Winterior_init, Wprev1_init, Wprev2_init, Woutput_init, epochs);
+        Winputs(:,:,i) = Winput;
+        Winteriors(:,:,i) = Winterior;
+        Wprev1s(:,:,i) = Wprev1;
+        Wprev2s(:,:,i) = Wprev2;
+        Woutputs(:,:,i) = Woutput;
+        errors(:, i) = error;
+    end
+    
+    save('MC.mat', 'errors', 'datas', 'Winputs', 'Winteriors', 'Wprev1s', 'Wprev2s', 'Woutputs', 'std_mean');
 end
