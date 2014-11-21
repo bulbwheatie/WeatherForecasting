@@ -1,10 +1,9 @@
-% TODO - erroar
 % Trains for a specified output feature
 function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_error, valid_error] = train_BP(X, Xvalid, Winput, Winterior, Wprev1, Wprev2, Woutput, mode, batch_size, num_stacks)
     if (strcmp(mode, 'temp') == 1)
         % Only train against the 2nd column of the outputs
-        Y = X(2:size(X), 1);
-        Yvalid = Xvalid(2:size(Xvalid),1);
+        Y = X(2:size(X), 2);
+        Yvalid = Xvalid(2:size(Xvalid),2);
     else
         Y = X(2:size(X), :);
         Yvalid = Xvalid(2:size(Xvalid), :);
@@ -13,7 +12,7 @@ function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_
     X = X(1:size(X)-1, :);
     Xvalid = Xvalid(1:size(Xvalid)-1, :);
     iter = 1;
-    max_iters = batch_size*500;
+    max_iters = batch_size*1000;
     lambda = 0.01;
     train_error = zeros(floor(max_iters/batch_size), 1);
     valid_error = zeros(floor(max_iters/batch_size), 1); %Store interals with the same value
@@ -21,7 +20,7 @@ function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_
     valid_sum = 0;
     lookback = 1;
     i=0;
-    while (iter <= max_iters && diff > 10^-4)
+    while (iter <= max_iters)
         Uinput = zeros(size(Winput));
         Uinterior = zeros(size(Winterior));
         Uprev1 = zeros(size(Wprev1));
@@ -54,13 +53,13 @@ function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_
         end        
                 
         % If the error is better, then store the weights
-        if (floor(iter/(batch_size-1)) == 1 || tmp_error/(batch_size-1) <= min_error ) 
+        if (floor(iter/(batch_size-1)) == 1 || valid_sum/iter <= min_error ) 
             Winput_min = Winput;
             Winterior_min = Winterior;
             Wprev1_min = Wprev1;
             Wprev2_min = Wprev2;
             Woutput_min = Woutput;
-            min_error = tmp_error/(batch_size-1);
+            min_error = valid_sum/iter;
             disp(min_error);
         end
         
