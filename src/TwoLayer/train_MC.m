@@ -181,6 +181,7 @@ function [Winput, Winterior, Wprev1, Wprev2, Woutput, error] = train_MC(data, Wi
         if (epoch < size(error, 1))
             error(epoch+1, 1) = tmp_error;
         end
+        epoch = epoch + 1;
     end
 end 
     
