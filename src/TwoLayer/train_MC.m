@@ -1,4 +1,19 @@
-% Trains for a specified output feature
+% Trains for a specified output feature using a montecarlo udpate method
+% instead of backpropagation
+
+% Inputs:
+% data = struct with the following memebers trainX, trainY, validateX,
+% validateY, testX, testY (values should be randomized)
+% N= number of neurons
+% Winput = [d+1 x N] where d+1 is the number of input features + a bias 
+% Winterior = Wprev1 = Wprev2 = [N+1 x N] (same size but different values)
+% Woutput = [N+1 x l] where l is the nubmer of output features
+% max_epochs = scalar
+
+% Outputs
+% Weight matrices = same size as respective input corresponding to the
+% lowest validation error
+% errors = [iter x 1]
 function [Winput, Winterior, Wprev1, Wprev2, Woutput, error] = train_MC(data, Winput, Winterior, Wprev1, Wprev2, Woutput, max_epochs)
     Winput_lambda = 10;
     Winterior_lambda = 10;

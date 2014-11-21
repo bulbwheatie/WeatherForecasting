@@ -1,4 +1,19 @@
-% Trains for a specified output feature
+% Trains for a specified output feature wtih an adaptive learning rate
+
+% Inputs:
+% data = struct with the following memebers trainX, trainY, validateX,
+% validateY, testX, testY (values should be randomized)
+% N= number of neurons
+% Winput = [d+1 x N] where d+1 is the number of input features + a bias 
+% Winterior = Wprev1 = Wprev2 = [N+1 x N] (same size but different values)
+% Woutput = [N+1 x l] where l is the nubmer of output features
+% batch_size = number of iterations before updating weights
+% batches = number of updates to perform
+
+% Outputs
+% Weight matrices = same size as respective input corresponding to the
+% lowest validation error
+% errors = [iter x 1]
 function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_error, valid_error, test_error] = train_BP_adaptive(data, Winput, Winterior, Wprev1, Wprev2, Woutput, batch_size, batches)
 
     iter = 1;
@@ -12,6 +27,7 @@ function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_
     i=1;
     min_error = inf;
     
+    % continue until we reach convergence or max iterations
     while (iter <= batches && diff > 10^-5)
         lambda = lambda_init;
         Uinput = zeros(size(Winput));
@@ -81,6 +97,7 @@ function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_
             diff = abs(valid_error(iter-lookback,1) - valid_sum/iter);
         end 
         
+        % Only update the weights if the error decreases
         if valid_error_tmp <= min_error
             Winput_min = Winput;
             Winterior_min = Winterior;
@@ -92,6 +109,8 @@ function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_
         end
         iter = iter + 1;
     end
+    
+    % Comptue the final test errro
     test_error = 0;
     for i=1:size(data.testX,3)
         [Ypred, ~, ~, ~, ~] = feedForward(data.testX(:,:,i), Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min);

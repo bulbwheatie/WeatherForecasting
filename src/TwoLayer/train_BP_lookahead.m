@@ -1,8 +1,33 @@
-% Trains for a specified output feature
-function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_error, valid_error, test_error] = train_BP_lookahead(data, Winput, Winterior, Wprev1, Wprev2, Woutput, batch_size, batches, lookahead)
+% train_BP_lookahead.m 
+
+% Trains the network on using a look ahead method to model how we do the
+% predictions. A set number of stacks are fed through the network and then
+% a specific number of predictions are computed and contribute to values to
+% update the weight matrices. 
+
+% Predicts for a single output feature
+
+% Inputs:
+% data = struct with the following memebers trainX, trainY, validateX,
+% validateY, testX, testY (values should be randomized)
+% N= number of neurons
+% Winput = [d+1 x N] where d+1 is the number of input features + a bias 
+% Winterior = Wprev1 = Wprev2 = [N+1 x N] (same size but different values)
+% Woutput = [N+1 x l] where l is the nubmer of output features
+% batch_size = number of iterations before updating weights
+% batches = number of updates to perform
+% lookahead = number of time units to predict into the future of udpates
+% feature_num = feature that is being predicted
+
+% Outputs
+% Weight matrices = same size as respective input corresponding to the
+% lowest validation error
+% errors = [iter x 1]
+
+function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_error, valid_error, test_error] = train_BP_lookahead(data, Winput, Winterior, Wprev1, Wprev2, Woutput, batch_size, batches, lookahead, feature_num)
     iter = 1;
     max_iters = batches;
-    lambda_init = 0.1
+    lambda_init = 0.1;
     train_error = zeros(batches, 1);
     valid_error = zeros(batches, 1); 
     diff = 1000;
@@ -10,6 +35,8 @@ function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_
     lookback = 1;
     i=0;
     min_error = inf;
+    
+    %While we have not converged or not met the max iterations
     while (iter <= max_iters && diff > 10^-5)
         Uinput = zeros(size(Winput));
         Uinterior = zeros(size(Winterior));
@@ -27,11 +54,12 @@ function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_
             end
 
             %Forward pass through the network with a sequence of training data
-            [Ypred, signals1, signals1prev, signals2, signals2prev] = feedForward(data.trainX(:,:,i), Winput, Winterior, Wprev1, Wprev2, Woutput);
+            [Ypred, X, signals1, signals1prev, signals2, signals2prev] = feedForward_lookahead(data.trainX(:,:,i), Winput, Winterior, Wprev1, Wprev2, Woutput, lookahead, feature_num);
             tmp_error = tmp_error + sum((Ypred(end-lookahead,:) - data.trainY(end-lookahead,:,i)).^2);
+            disp(tmp_error);
             % Backpropagate and update weight matrices
             [DjN, DiN, DpN] = backpropagate_lookahead(data.trainX(:,:,i), data.trainY(:,:,i), signals1 + signals1prev, signals2 + signals2prev, Ypred, Winterior, Wprev1, Wprev2, Woutput, lookahead);       
-            [Uinput, Uinterior, Uprev1, Uprev2, Uoutput] = calculateUpdates(Uinput, Uinterior, Uprev1, Uprev2, Uoutput, data.trainX(:,:,i), signals1, signals1prev, signals2, signals2prev, DjN, DiN, DpN);
+            [Uinput, Uinterior, Uprev1, Uprev2, Uoutput] = calculateUpdates(Uinput, Uinterior, Uprev1, Uprev2, Uoutput, X, signals1, signals1prev, signals2, signals2prev, DjN, DiN, DpN);
         end
         
         %Run the validation data through the network
@@ -78,12 +106,16 @@ function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_
         valid_error_tmp = valid_error_tmp / size(data.validateX,3);
         valid_sum = valid_sum + valid_error_tmp;
         valid_error(iter, 1) = valid_sum/iter;
+        
+        % Caluclate the difference in validation error mean between this
+        % iteration and an iteration in the past
         if (iter <= lookback + 1)
             diff = 1000;
         else
             diff = abs(valid_error(iter-lookback,1) - valid_sum/iter);
         end 
         
+        % Only store weights for when the validation error decreases
         if valid_error_tmp <= min_error
             Winput_min = Winput;
             Winterior_min = Winterior;
@@ -95,6 +127,8 @@ function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_
         end
         iter = iter + 1;
     end
+    
+    % Calculate final output error
     test_error = 0;
     for i=1:size(data.testX,3)
         [Ypred, ~, ~, ~, ~] = feedForward(data.testX(:,:,i), Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min);

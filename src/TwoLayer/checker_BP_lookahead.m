@@ -1,4 +1,15 @@
 % Models the temperature output based on all features
+% Uses adaptive learning rate, randomized data and lookahead
+% backpropagation
+
+% data = randomized data struct for training
+% (must contain the matrices: trainX, trainY, validateX, validateY, testX,
+% testY)
+% order_data = in order data of at least number of predicted values +
+% number of stacks + lookahead
+% used for generating graphs
+% std_mean = [2 x n] to reform the zero-meaned data; first row is std and
+% second row is mean
 
 function checker_BP_lookahead(data, order_data, std_mean)
     feature_num = 2; %Temperature
@@ -18,16 +29,16 @@ function checker_BP_lookahead(data, order_data, std_mean)
     Wprev2_init = initWeights(num_neurons+1, num_neurons,-1/10, 1/10);
     Woutput_init = initWeights(num_neurons+1, size(data.trainY, 2), -1/2, 1/2); %Only single output feature in this case
    
-    [Winput, Winterior, Wprev1, Wprev2, Woutput, train_error, valid_error, test_error] = train_BP_lookahead(data, Winput_init, Winterior_init, Wprev1_init, Wprev2_init, Woutput_init, batch_size, batches, lookahead);
+    [Winput, Winterior, Wprev1, Wprev2, Woutput, train_error, valid_error, test_error] = train_BP_lookahead(data, Winput_init, Winterior_init, Wprev1_init, Wprev2_init, Woutput_init, batch_size, batches, lookahead, feature_num);
     
     %Do prediction without extra lookahead stacks
     i = 200;
-    X = order_data(i:i+num_stacks-1, :); %additional points for size
+    X = order_data(i:i+num_stacks-1, :); 
     values_pred = zeros(6,1);
     values_actual = order_data(i+num_stacks:i+num_stacks+5, 2); %Predict 6 into future
     
     for j=1:6
-        [temp_y, ~, ~,~, ~] = feedForward([X ones(size(X,1), 1)], Winput, Winterior, Wprev1, Wprev2, Woutput);
+        [temp_y, ~, ~,~, ~] = feedForward_lookahead([X ones(size(X,1), 1)], Winput, Winterior, Wprev1, Wprev2, Woutput, 0, feature_num);
         values_pred(j,:) = (temp_y(end,:) .* std_mean(1,2)) + std_mean(2,2);
         values_full = order_data(i+num_stacks + j -1 ,:);
         values_full(1,2) = temp_y(end,:);

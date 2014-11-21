@@ -1,4 +1,19 @@
 % Trains for a specified output feature
+
+% Inputs:
+% data = struct with the following memebers trainX, trainY, validateX,
+% validateY, testX, testY (values should be randomized)
+% N= number of neurons
+% Winput = [d+1 x N] where d+1 is the number of input features + a bias 
+% Winterior = Wprev1 = Wprev2 = [N+1 x N] (same size but different values)
+% Woutput = [N+1 x l] where l is the nubmer of output features
+% batch_size = number of iterations before updating weights
+% batches = number of updates to perform
+
+% Outputs
+% Weight matrices = same size as respective input corresponding to the
+% lowest validation error
+% errors = [iter x 1]
 function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_error, valid_error, test_error] = train_BP_struct(data, Winput, Winterior, Wprev1, Wprev2, Woutput, batch_size, batches)
     iter = 1;
     max_iters = batch_size*batches;

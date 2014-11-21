@@ -1,11 +1,23 @@
 % Updates the weight matrices by back propagating errors
-%
+% Only looks at the output of the final layer for backpropagation 
+
 % X = [s x d] d is features, s is nubmer of samples (also stacks)
-% 
-% signals = [s x n] where n is the nubmer of neurons and s is the number of
+% Winput = [d+1 x N] where d+1 is the number of input features + a bias 
+% Winterior = Wprev1 = Wprev2 = [N+1 x N] (same size but different values)
+% Woutput = [N+1 x l] where l is the nubmer of output features
+% signals1 = [s x n] where n is the nubmer of neurons and s is the number of
 % stacks. Each level of neurons has a corresponding column vector of
-% signals. [n x 1] is the signal for the first stack's hidden layer
+% signals. [n x 1] is the signal for the first stack's first hidden layer
+% The signal is the value prior to squashing; 
+% signals2 = [s x n] is the signals for the second hidden layer
 % Y = [m x d] where the mth sample is the final output
+% lookahead = number of stacks that were predicted and to include in
+% backprops
+
+% Outputs
+% DjN = [s x L] delta for output node L= output features
+% DiN = [s x n] delta for second hidden layer n = number of neurons
+% DpN = [s x n] delta for first hidden layer s = number of stacks
 
 function [DjN, DiN, DpN] = backpropagate(X, Y, signals1, signals2, Ypred, Winterior, Wprev1, Wprev2, Woutput)
     n = size(Wprev1, 1); %number of neurons
