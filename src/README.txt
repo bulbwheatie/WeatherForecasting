@@ -1,7 +1,7 @@
 ***********************LOCATION INDEPENDENT WEATHER FORECASTING README***********************
 
 
-This file contains instructions for how to use the two-layer recurrent neural network. All  files discussed here are included in the TwoLayerRecurrent folder. Because the one-layer recurrent network and for the nonrecurrent network do not work as well as the two-layer network we have not included instructions for their use, but they can for the most part be run in the same way.
+This file contains instructions for how to use the two-layer recurrent neural network. All  files discussed here are included in the TwoLayerRecurrent folder. Because the one-layer recurrent network and for the non-recurrent network do not work as well as the two-layer network we have not included instructions for their use, but for the most part they can be run in the same way as the two-layer network.
 
 
 

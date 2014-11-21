@@ -8,7 +8,7 @@
 % Outputs 
 % W = 
 % erros = scalar - MSE for the network on the test data
-function [Wone, Wtwo, Wfinal, validateError, testError] = myTrain(data, learningRate, numHidden, iterations, Wfinal, Wone, Wtwo)
+function [Wone, Wtwo, Wfinal, validateError, testError] = train(data, learningRate, numHidden, iterations, Wfinal, Wone, Wtwo)
     %initialize weight matrices with random values if the matrices are not
     %provided
     if nargin < 5

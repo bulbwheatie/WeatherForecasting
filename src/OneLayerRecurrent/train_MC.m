@@ -1,5 +1,5 @@
 % Trains for a specified output feature
-function [Winput, Wprev, Woutput, error] = train_random(X, Winput, Wprev, Woutput, mode, num_stacks, max_epochs)
+function [Winput, Wprev, Woutput, error] = train_MC(X, Winput, Wprev, Woutput, mode, num_stacks, max_epochs)
     if (strcmp(mode, 'temp') == 1)
         % Only train against the 2nd column of the outputs
         Y = X(2:size(X), 2);

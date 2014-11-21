@@ -1,5 +1,5 @@
 
-function driver_MC()
+function driver_BP()
     [raw_data, raw_std_mean] = getData;
     std_mean = raw_std_mean(:,2);
     data = [ones(size(raw_data, 1), 1) raw_data(:,2)];
@@ -10,10 +10,10 @@ function driver_MC()
     Woutput = initWeights(num_neurons, 1, -2, 2); %Only single output feature in this case
     
     num_stacks = 8;
-    epochs = 15;
+    epochs = 100;
     
     %train_random uses a monte carlo update system
-    [Winput, Wprev, Woutput, error] = train_MC(data, Winput, Wprev, Woutput, 'temp', num_stacks, epochs);
+    [Winput, Wprev, Woutput, error] = train_BP(data, Winput, Wprev, Woutput, 'temp', num_stacks, epochs);
     
     output_stacks = 2;
     
