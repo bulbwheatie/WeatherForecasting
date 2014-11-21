@@ -14,7 +14,7 @@
 % Weight matrices = same size as respective input corresponding to the
 % lowest validation error
 % errors = [iter x 1]
-function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_error, valid_error, test_error] = train_BP_struct(data, Winput, Winterior, Wprev1, Wprev2, Woutput, batch_size, batches)
+function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_error, valid_error, test_error] = train_BP_nonadaptive(data, Winput, Winterior, Wprev1, Wprev2, Woutput, batch_size, batches)
     iter = 1;
     max_iters = batch_size*batches;
     lambda = 0.005;

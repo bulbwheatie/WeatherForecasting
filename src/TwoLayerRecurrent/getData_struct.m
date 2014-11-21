@@ -24,7 +24,7 @@ function [data, std_mean] = getData_struct(mode, num_stacks)
     dataY = zeros(num_stacks, num_features, samples_per_file);
     
     for f=1:max(size(files))
-        [raw_data, std_mean] = parseData(files(f).name);
+        [raw_data, std_mean] = parseData(files(f).name, mode);
         
         for row = 1:samples_per_file
             for stack = 1:num_stacks

@@ -22,18 +22,9 @@ function [Y1, Y2, signal1, signal1prev, signal2, signal2prev] = feedForwardStack
     signal1prev = ones(1,n); 
     signal2 = ones(1,n);
     signal2prev = ones(1,n); 
-%     for i=1:n-1
-%         signal1(1,i) = sum(X * Winput(:, i)); 
-%         signal1prev(1,i) =  sum(Xprev1 * Wprev1(:,i));
-%     end
     signal1(1, 1:end-1) = X * Winput;
     signal1prev(1, 1:end-1) = Xprev1 * Wprev1; 
     Y1 = tanh(signal1 + signal1prev);
-    
-%     for i=1:n-1
-%         signal2(1,i) = sum(Y1 * Winterior(:,i));
-%         signal2prev(1, i) = sum(Xprev2 * Wprev2(:,i));
-%     end
     signal2(1, 1:end-1) = Y1 * Winterior;
     signal2prev(1, 1:end-1) = Xprev2 * Wprev2;
     Y2 = tanh(signal2 + signal2prev);

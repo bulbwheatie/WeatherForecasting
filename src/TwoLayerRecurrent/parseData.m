@@ -1,7 +1,12 @@
-function [data, std_mean] = parseData(textfile)
-
+function [data, std_mean] = parseData(textfile, mode)
+    if  strcmp(mode, 'test')
+        PATH = '../../data/test/';
+        NUM_ROWS = (24/4)*31;
+    else
+        PATH = '../../data/';
+        NUM_ROWS = (24/4)*365;
+    end
     NUM_FEATURES = 6;
-    PATH = '../../data/';
 
     [time visibility temperature dewpoint windspeed windDir pressure] = textread(strcat(PATH, textfile), '%*s%*s%s%*s%*s%*s%s%*s%*s%*s%*s%*s%s%*s%*s%*s%*s%*s%*s%*s%s%*s%*s%*s%s%*s%s%*s%*s%*s%s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s', 'delimiter', ',');
 
@@ -15,7 +20,7 @@ function [data, std_mean] = parseData(textfile)
     pressure = str2double(pressure); %StationPressure
 
     %create the data matrix with one row for every 4th hour of the year
-    data = zeros((24/4)*365, NUM_FEATURES);
+    data = zeros(NUM_ROWS, NUM_FEATURES);
 
     %only take the first row from each hour
     last = -1;

@@ -14,7 +14,7 @@
 % Weight matrices = same size as respective input corresponding to the
 % lowest validation error
 % errors = [iter x 1]
-function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_error, valid_error, test_error] = train_BP_adaptive(data, Winput, Winterior, Wprev1, Wprev2, Woutput, batch_size, batches)
+function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_error, valid_error, test_error] = train_BP(data, Winput, Winterior, Wprev1, Wprev2, Woutput, batch_size, batches)
 
     iter = 1;
     lambda_init = 0.5;
@@ -88,8 +88,8 @@ function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_
             [Ypred, ~, ~, ~, ~] = feedForward(data.validateX(:,:,v), Winput, Winterior, Wprev1, Wprev2, Woutput);
             valid_error_tmp = valid_error_tmp + sum((Ypred(end,:) - data.validateY(end,:,v)).^2);
         end
-        valid_sum = valid_sum + valid_error_tmp;
         valid_error_tmp = valid_error_tmp / size(data.validateX,3);
+        valid_sum = valid_sum + valid_error_tmp;
         valid_error(iter, 1) = valid_sum/iter;
         if (iter <= lookback + 1)
             diff = 1000;
@@ -110,7 +110,7 @@ function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_
         iter = iter + 1;
     end
     
-    % Comptue the final test errro
+    % Comptue the final test error
     test_error = 0;
     for i=1:size(data.testX,3)
         [Ypred, ~, ~, ~, ~] = feedForward(data.testX(:,:,i), Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min);
