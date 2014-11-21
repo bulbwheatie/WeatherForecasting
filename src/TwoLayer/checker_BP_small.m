@@ -3,12 +3,12 @@
 function checker_BP_small(data, std_mean)
     batch_size = 10;
     valid_size = 5;
-    num_stacks = 6;
-    small_set = data(1:batch_size+num_stacks,:);
+    num_stacks = 11;
+    small_set = data(1:50+num_stacks,:);
     valid_data = data(200:200+valid_size+num_stacks,:);
     
     %Random init of weights
-    num_neurons  = 12;
+    num_neurons  = 15;
     small_set = [small_set ones(size(small_set,1), 1)]; % Add bias feature
     valid_data = [valid_data ones(size(valid_data,1), 1)]; % Add bias feature
 
