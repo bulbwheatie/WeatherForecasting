@@ -1,8 +1,8 @@
 % Trains for a specified output feature
-function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_error, valid_error, test_error] = train_BP_lookahead(data, Winput, Winterior, Wprev1, Wprev2, Woutput, batch_size, batches, lookahead)
+function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_error, valid_error, test_error] = train_BP_lookahead(data, Winput, Winterior, Wprev1, Wprev2, Woutput, batch_size, batches, lookahead, feature_num)
     iter = 1;
     max_iters = batches;
-    lambda_init = 0.1
+    lambda_init = 0.1;
     train_error = zeros(batches, 1);
     valid_error = zeros(batches, 1); 
     diff = 1000;
@@ -27,11 +27,11 @@ function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_
             end
 
             %Forward pass through the network with a sequence of training data
-            [Ypred, signals1, signals1prev, signals2, signals2prev] = feedForward(data.trainX(:,:,i), Winput, Winterior, Wprev1, Wprev2, Woutput);
+            [Ypred, X, signals1, signals1prev, signals2, signals2prev] = feedForward_lookahead(data.trainX(:,:,i), Winput, Winterior, Wprev1, Wprev2, Woutput, lookahead, feature_num);
             tmp_error = tmp_error + sum((Ypred(end-lookahead,:) - data.trainY(end-lookahead,:,i)).^2);
             % Backpropagate and update weight matrices
             [DjN, DiN, DpN] = backpropagate_lookahead(data.trainX(:,:,i), data.trainY(:,:,i), signals1 + signals1prev, signals2 + signals2prev, Ypred, Winterior, Wprev1, Wprev2, Woutput, lookahead);       
-            [Uinput, Uinterior, Uprev1, Uprev2, Uoutput] = calculateUpdates(Uinput, Uinterior, Uprev1, Uprev2, Uoutput, data.trainX(:,:,i), signals1, signals1prev, signals2, signals2prev, DjN, DiN, DpN);
+            [Uinput, Uinterior, Uprev1, Uprev2, Uoutput] = calculateUpdates_lookahead(Uinput, Uinterior, Uprev1, Uprev2, Uoutput, X, signals1, signals1prev, signals2, signals2prev, DjN, DiN, DpN);
         end
         
         %Run the validation data through the network
