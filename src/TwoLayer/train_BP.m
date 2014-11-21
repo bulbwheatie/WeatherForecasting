@@ -1,4 +1,3 @@
-% TODO - erroar
 % Trains for a specified output feature
 function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_error, valid_error] = train_BP(X, Xvalid, Winput, Winterior, Wprev1, Wprev2, Woutput, mode, batch_size, num_stacks)
     if (strcmp(mode, 'temp') == 1)

@@ -1,4 +1,3 @@
-% TODO - erroar
 % Trains for a specified output feature
 function [Winput, Winterior, Wprev1, Wprev2, Woutput, error] = train_BP_adaptive(data, Winput, Winterior, Wprev1, Wprev2, Woutput, max_epochs)
 
@@ -11,10 +10,6 @@ function [Winput, Winterior, Wprev1, Wprev2, Woutput, error] = train_BP_adaptive
     
     for epoch=1:max_epochs
         lambda = lambda_init;
-        disp('Starting epoch...');
-        disp(epoch);
-        disp(error(epoch, 1));
-
         Uinput = zeros(size(Winput));
         Uinterior = zeros(size(Winterior));
         Uprev1 = zeros(size(Wprev1));
@@ -28,25 +23,23 @@ function [Winput, Winterior, Wprev1, Wprev2, Woutput, error] = train_BP_adaptive
         end
         
         %adaptive learning rate
-        %tmp_error = inf;
-        %while tmp_error > error(epoch, 1)
-        %    disp('starting while loop');
-        %    disp(epoch);
-        %    disp(tmp_error);
-       %     disp(error(epoch,1));
-       %     disp(lambda);
+        tmp_error = inf;
+        while tmp_error > error(epoch, 1)
+            tmp_error = 0;
             tmp_Winput = Winput + lambda * Uinput/num_samples;
             tmp_Winterior = Winterior + lambda * Uinterior/num_samples;
             tmp_Wprev1 = Wprev1 + lambda * Uprev1/num_samples;
             tmp_Wprev2 = Wprev2 + lambda * Uprev2/num_samples;
             tmp_Woutput = Woutput + lambda * Uoutput/num_samples;
             
-            %Forward pass through the network with a sequence of training data
-            [Ypred, signals1, signals1prev, signals2, signals2prev] = feedForward_struct(data.trainX, Winput, Winterior, Wprev1, Wprev2, Woutput);
-            tmp_error = sum(sum((Ypred(size(data.trainY, 1),:,:) - data.trainY(size(data.trainY, 1),:,:)).^2))/num_samples;
-            
-        %    lambda = lambda/2;
-        %end
+            %Forward pass through the network with validation data to see if error decreases
+	    for v=1:size(data.validateX, 3)
+            	[Ypred, signals1, signals1prev, signals2, signals2prev] = feedForward_struct(data.trainX(:, :, v), tmp_Winput, tmp_Winterior, tmp_Wprev1, tmp_Wprev2, tmp_Woutput);
+            	tmp_error = tmp_error + (data.trainY(:,:,v) - Ypred(end,:)).^2;
+            end
+	    tmp_error = tmp_error/size(data.validateX, 3);
+            lambda = lambda/2;
+        end
         
         Winput = tmp_Winput;
         Winterior = tmp_Winterior;
@@ -55,6 +48,7 @@ function [Winput, Winterior, Wprev1, Wprev2, Woutput, error] = train_BP_adaptive
         Woutput = tmp_Woutput;
         
         error(epoch, 1) = tmp_error;
+	disp(tmp_error);
         if (epoch < size(error, 1))
             error(epoch+1, 1) = tmp_error;
         end
