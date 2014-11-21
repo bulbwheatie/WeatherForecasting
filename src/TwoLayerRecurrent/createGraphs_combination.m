@@ -9,11 +9,11 @@
 % Y_actual= the next 24 hours of data in 4 hour intervals
 % data = the initial data set to predict on 
 
-function [Ypred, Yactual, test_error] = createGraphs(index, Winput, Winterior, Wprev1, Wprev2, Woutput, errors)
+function [Ypred, Yactual, test_error] = createGraphs_combination(index, Winput, Winterior, Wprev1, Wprev2, Woutput, Winputa, Winteriora, Wprev1a, Wprev2a, Woutputa)
     [data_full, std_mean] = getData('test');
     data_init = data_full(index:index+7, :);
     output_stacks = 6;
-    Yactual = data_full(index+8:index+7 + output_stacks, :);
+    Yactual = data_full(index+8:index+7 + output_stacks,:);
     data = [data_init ones(size(data_init,1),1)];
     num_features = size(Winput, 1)-1;
     Ypred = zeros(output_stacks, num_features); %Predict 6 data points into the future
@@ -24,6 +24,8 @@ function [Ypred, Yactual, test_error] = createGraphs(index, Winput, Winterior, W
         %For each feature use it's weight matrix to predict the next value
         for j=1:num_features
             [temp_y, ~, ~] = feedForward(data, Winput(:,:,j), Winterior(:,:,j), Wprev1(:,:,j), Wprev2(:,:,j), Woutput(:,:,j));
+            [temp_ya, ~, ~] = feedForward(data, Winputa(:,:,j), Winteriora(:,:,j), Wprev1a(:,:,j), Wprev2a(:,:,j), Woutputa(:,:,j));
+            temp_y = (temp_ya + temp_y)/2;
             new_data_row(1,j) = temp_y(end,1);
         end
         Ypred(i,:) = (new_data_row .* std_mean(1,:)) + std_mean(2,:); %convert back to the original data
@@ -64,13 +66,5 @@ function [Ypred, Yactual, test_error] = createGraphs(index, Winput, Winterior, W
         axis(axes(i,:));
     	saveas(gcf, strcat('graphs/', features{i}, '_allData.fig'), 'fig');
     end
-    x_axis = 1:size(errors, 1);
-    plot(x_axis, errors(:,1)', x_axis, errors(:,2)', x_axis, errors(:,3)', x_axis, errors(:,4)', x_axis, errors(:,5)', x_axis, errors(:,6)');
-    legend('Visibility', 'Temperature', 'Dew Point', 'Wind Speed', 'Wind Direction', 'Pressure', 'Location', 'northeast');
-    xlabel('Epoch');
-    ylabel('Average mean squared error');
-    title('Training error');
-    axis([1 min(30, size(errors,1)) 0 max(max(errors))]);
-    saveas(gcf, 'graphs/training_error.fig', 'fig');
 end
 
