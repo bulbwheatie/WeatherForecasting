@@ -1,4 +1,6 @@
-% Performs a feedforward pass through the network
+% Performs a feedforward pass through the network. But for hte final
+% lookahead stacks, the predicted value is fed back into the network as an
+% input to model the prediction process
 
 % X = [m x d] sequence of data samples for t = 1,..., m
 % Winput = [d x n] input weight matrix (n = number of neurons per layer)

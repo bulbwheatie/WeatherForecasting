@@ -59,7 +59,7 @@ function [Winput_min, Winterior_min, Wprev1_min, Wprev2_min, Woutput_min, train_
             disp(tmp_error);
             % Backpropagate and update weight matrices
             [DjN, DiN, DpN] = backpropagate_lookahead(data.trainX(:,:,i), data.trainY(:,:,i), signals1 + signals1prev, signals2 + signals2prev, Ypred, Winterior, Wprev1, Wprev2, Woutput, lookahead);       
-            [Uinput, Uinterior, Uprev1, Uprev2, Uoutput] = calculateUpdates_lookahead(Uinput, Uinterior, Uprev1, Uprev2, Uoutput, X, signals1, signals1prev, signals2, signals2prev, DjN, DiN, DpN);
+            [Uinput, Uinterior, Uprev1, Uprev2, Uoutput] = calculateUpdates(Uinput, Uinterior, Uprev1, Uprev2, Uoutput, X, signals1, signals1prev, signals2, signals2prev, DjN, DiN, DpN);
         end
         
         %Run the validation data through the network

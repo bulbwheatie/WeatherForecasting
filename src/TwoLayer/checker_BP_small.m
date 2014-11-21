@@ -1,5 +1,11 @@
 % Models the temperature output based on all features
+% Uses non-randomized data to check if the network algorithm is functioning
 
+% data = [mxn] in order sequence of points
+% std_mean = [2 x n] to reform the zero-meaned data; first row is std and
+% second row is mean
+
+%Usage: network debugging
 function checker_BP_small(data, std_mean)
     batch_size = 10;
     valid_size = 5;

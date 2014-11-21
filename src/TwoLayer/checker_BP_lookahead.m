@@ -1,4 +1,15 @@
 % Models the temperature output based on all features
+% Uses adaptive learning rate, randomized data and lookahead
+% backpropagation
+
+% data = randomized data struct for training
+% (must contain the matrices: trainX, trainY, validateX, validateY, testX,
+% testY)
+% order_data = in order data of at least number of predicted values +
+% number of stacks + lookahead
+% used for generating graphs
+% std_mean = [2 x n] to reform the zero-meaned data; first row is std and
+% second row is mean
 
 function checker_BP_lookahead(data, order_data, std_mean)
     feature_num = 2; %Temperature
